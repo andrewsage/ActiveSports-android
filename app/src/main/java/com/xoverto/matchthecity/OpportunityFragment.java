@@ -2,10 +2,12 @@ package com.xoverto.matchthecity;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -76,11 +78,100 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
 
         // Set the adapter
         mCursorAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1,
+                R.layout.opportunity_list_item,
                 null,
-                new String[] { DataProvider.KEY_OPPORTUNITY_NAME},
-                new int[] { android.R.id.text1}, 0);
+                new String[] { DataProvider.KEY_OPPORTUNITY_NAME,
+                        DataProvider.KEY_OPPORTUNITY_VENUE_ID,
+                        DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID,
+                        DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID,
+                        DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK,
+                        DataProvider.KEY_OPPORTUNITY_START_TIME,
+                        DataProvider.KEY_OPPORTUNITY_END_TIME,
+                        DataProvider.KEY_OPPORTUNITY_DESCRIPTION
+                },
+                new int[] { R.id.name, R.id.venue, R.id.activity, R.id.sub_activity, R.id.day, R.id.start_time, R.id.end_time, R.id.description }, 0);
 
+
+        mCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            public boolean setViewValue(View view, Cursor cursor, int column) {
+
+                if (view.getId() == R.id.venue) {
+                    int venue_id = cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_VENUE_ID));
+
+                    ContentResolver cr = view.getContext().getContentResolver();
+
+                    // Construct a where clause to make sure we don't already have this carpark in the provider
+                    String w = DataProvider.KEY_VENUE_ID + " = '" + venue_id + "'";
+                    String label = "unknown venue";
+
+                    // If the carpark is new, insert it into the provider
+                    Cursor query = cr.query(DataProvider.CONTENT_URI_VENUES, null, w, null, null);
+
+                    if(query.getCount() > 0) {
+                        query.moveToFirst();
+                        label = query.getString(query.getColumnIndex(DataProvider.KEY_NAME));
+                    }
+                    query.close();
+
+
+                    TextView text = (TextView)view.findViewById(R.id.venue);
+                    text.setText(label);
+
+                    return true;
+                }
+
+                if (view.getId() == R.id.activity) {
+                    int activity_id = cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID));
+
+                    ContentResolver cr = view.getContext().getContentResolver();
+
+                    // Construct a where clause to make sure we don't already have this carpark in the provider
+                    String w = DataProvider.KEY_ACTIVITY_ID + " = '" + activity_id + "'";
+                    String label = "unknown activity";
+
+                    // If the carpark is new, insert it into the provider
+                    Cursor query = cr.query(DataProvider.CONTENT_URI_ACTIVITIES, null, w, null, null);
+
+                    if(query.getCount() > 0) {
+                        query.moveToFirst();
+                        label = query.getString(query.getColumnIndex(DataProvider.KEY_ACTIVITY_TITLE));
+                    }
+                    query.close();
+
+
+                    TextView text = (TextView)view.findViewById(R.id.activity);
+                    text.setText(label);
+
+                    return true;
+                }
+
+                if (view.getId() == R.id.sub_activity) {
+                    int sub_activity_id = cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID));
+
+                    ContentResolver cr = view.getContext().getContentResolver();
+
+                    // Construct a where clause to make sure we don't already have this carpark in the provider
+                    String w = DataProvider.KEY_SUB_ACTIVITY_ID + " = '" + sub_activity_id + "'";
+                    String label = "unknown sub activity";
+
+                    // If the carpark is new, insert it into the provider
+                    Cursor query = cr.query(DataProvider.CONTENT_URI_SUB_ACTIVITIES, null, w, null, null);
+
+                    if(query.getCount() > 0) {
+                        query.moveToFirst();
+                        label = query.getString(query.getColumnIndex(DataProvider.KEY_SUB_ACTIVITY_TITLE));
+                    }
+                    query.close();
+
+                    TextView text = (TextView)view.findViewById(R.id.sub_activity);
+                    text.setText(label);
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
 
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mCursorAdapter);
@@ -166,7 +257,14 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
                 DataProvider.KEY_ID,
-                DataProvider.KEY_OPPORTUNITY_NAME
+                DataProvider.KEY_OPPORTUNITY_NAME,
+                DataProvider.KEY_OPPORTUNITY_VENUE_ID,
+                DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID,
+                DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID,
+                DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK,
+                DataProvider.KEY_OPPORTUNITY_START_TIME,
+                DataProvider.KEY_OPPORTUNITY_END_TIME,
+                DataProvider.KEY_OPPORTUNITY_DESCRIPTION
         };
         CursorLoader loader = new CursorLoader(getActivity(),
                 DataProvider.CONTENT_URI_OPPORTUNITIES,
