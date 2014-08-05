@@ -19,6 +19,7 @@ public class DataProvider extends ContentProvider {
     public static final Uri CONTENT_URI_VENUES = Uri.parse("content://com.xoverto.matchthecity/venues");
     public static final Uri CONTENT_URI_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/activities");
     public static final Uri CONTENT_URI_SUB_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/sub_activities");
+    public static final Uri CONTENT_URI_OPPORTUNITIES = Uri.parse("content://com.xoverto.matchthecity/opportunities");
 
     // Column names
     public static final String KEY_ID = "_id"; // All tables use this field
@@ -42,6 +43,17 @@ public class DataProvider extends ContentProvider {
     public static final String KEY_SUB_ACTIVITY_ACTIVITY_ID = "activity_id";
     public static final String KEY_SUB_ACTIVITY_TITLE = "title";
 
+    public static final String KEY_OPPORTUNITY_ID = "opportunity_id";
+    public static final String KEY_OPPORTUNITY_DESCRIPTION = "description";
+    public static final String KEY_OPPORTUNITY_NAME = "name";
+    public static final String KEY_OPPORTUNITY_VENUE_ID = "venue_id";
+    public static final String KEY_OPPORTUNITY_ACTIVITY_ID = "activity_id";
+    public static final String KEY_OPPORTUNITY_SUB_ACTIVITY_ID = "sub_activity_id";
+    public static final String KEY_OPPORTUNITY_ROOM = "room";
+    public static final String KEY_OPPORTUNITY_START_TIME = "start_time";
+    public static final String KEY_OPPORTUNITY_END_TIME = "end_time";
+    public static final String KEY_OPPORTUNITY_DAY_OF_WEEK = "day_of_week";
+
     // Create the constants used to differentiate between the different URI requests
     private static final int VENUES = 1;
     private static final int VENUE_ID = 2;
@@ -49,6 +61,8 @@ public class DataProvider extends ContentProvider {
     private static final int ACTIVITY_ID = 4;
     private static final int SUB_ACTIVITIES = 5;
     private static final int SUB_ACTIVITY_ID = 6;
+    private static final int OPPORTUNITIES = 7;
+    private static final int OPPORTUNITY_ID = 8;
 
     private static final UriMatcher uriMatcher;
 
@@ -63,6 +77,8 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI("com.xoverto.matchthecity", "activities/#", ACTIVITY_ID);
         uriMatcher.addURI("com.xoverto.matchthecity", "sub_activities", SUB_ACTIVITIES);
         uriMatcher.addURI("com.xoverto.matchthecity", "sub_activities/#", SUB_ACTIVITY_ID);
+        uriMatcher.addURI("com.xoverto.matchthecity", "opportunities", OPPORTUNITIES);
+        uriMatcher.addURI("com.xoverto.matchthecity", "opportunities/#", OPPORTUNITY_ID);
     }
 
     VenueDatabaseHelper dbHelper;
@@ -103,6 +119,16 @@ public class DataProvider extends ContentProvider {
             }
             break;
 
+            case OPPORTUNITIES:
+                count = database.delete(VenueDatabaseHelper.OPPORTUNITY_TABLE, selection, selectionArgs);
+                break;
+
+            case OPPORTUNITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(VenueDatabaseHelper.OPPORTUNITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+            break;
+
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
@@ -120,6 +146,8 @@ public class DataProvider extends ContentProvider {
             case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.activities";
             case SUB_ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.sub_activities";
             case SUB_ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.sub_activities";
+            case OPPORTUNITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.opportunities";
+            case OPPORTUNITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.opportunities";
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
     }
@@ -166,6 +194,20 @@ public class DataProvider extends ContentProvider {
                 if(rowID > 0) {
                     Uri newUri = ContentUris.withAppendedId(CONTENT_URI_SUB_ACTIVITIES, rowID);
                     getContext().getContentResolver().notifyChange(CONTENT_URI_SUB_ACTIVITIES, null);
+                    return newUri;
+                }
+            }
+            break;
+
+            case OPPORTUNITIES:
+            case OPPORTUNITY_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(VenueDatabaseHelper.OPPORTUNITY_TABLE, "opportunities", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_OPPORTUNITIES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_OPPORTUNITIES, null);
                     return newUri;
                 }
             }
@@ -221,6 +263,15 @@ public class DataProvider extends ContentProvider {
                 qb.setTables(VenueDatabaseHelper.SUB_ACTIVITY_TABLE);
                 qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
                 defaultSortBy = KEY_SUB_ACTIVITY_TITLE;
+                break;
+            case OPPORTUNITIES:
+                qb.setTables(VenueDatabaseHelper.OPPORTUNITY_TABLE);
+                defaultSortBy = KEY_OPPORTUNITY_NAME;
+                break;
+            case OPPORTUNITY_ID:
+                qb.setTables(VenueDatabaseHelper.OPPORTUNITY_TABLE);
+                qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
+                defaultSortBy = KEY_OPPORTUNITY_NAME;
                 break;
             default: break;
         }
@@ -285,6 +336,16 @@ public class DataProvider extends ContentProvider {
             }
             break;
 
+            case OPPORTUNITIES:
+                count = database.update(VenueDatabaseHelper.OPPORTUNITY_TABLE, values, selection, selectionArgs);
+                break;
+
+            case OPPORTUNITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.update(VenueDatabaseHelper.OPPORTUNITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+            break;
+
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -298,10 +359,11 @@ public class DataProvider extends ContentProvider {
     private static class VenueDatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "VenueProvider";
         private static final String DATABASE_NAME = "venues.db";
-        private static final int DATABASE_VERSION = 2;
+        private static final int DATABASE_VERSION = 3;
         private static final String VENUE_TABLE = "venues";
         private static final String ACTIVITY_TABLE = "activities";
         private static final String SUB_ACTIVITY_TABLE = "sub_activities";
+        private static final String OPPORTUNITY_TABLE = "opportunities";
         private static final String DATABASE_CREATE_VENUE = "create table " + VENUE_TABLE + " ("
                 + KEY_ID + " integer primary key autoincrement, "
                 + KEY_VENUE_ID + " TEXT,"
@@ -327,6 +389,19 @@ public class DataProvider extends ContentProvider {
                 + KEY_SUB_ACTIVITY_TITLE + " TEXT, "
                 + KEY_SUB_ACTIVITY_ACTIVITY_ID + " INTEGER);";
 
+        private static final String DATABASE_CREATE_OPPORTUNITY =  "create table " + OPPORTUNITY_TABLE + " ("
+                + KEY_ID + " integer primary key autoincrement, "
+                + KEY_OPPORTUNITY_ID + " INTEGER, "
+                + KEY_OPPORTUNITY_NAME + " TEXT, "
+                + KEY_OPPORTUNITY_DESCRIPTION + " TEXT, "
+                + KEY_OPPORTUNITY_ACTIVITY_ID + " INTEGER, "
+                + KEY_OPPORTUNITY_SUB_ACTIVITY_ID + " INTEGER, "
+                + KEY_OPPORTUNITY_VENUE_ID + " INTEGER, "
+                + KEY_OPPORTUNITY_ROOM + " TEXT, "
+                + KEY_OPPORTUNITY_START_TIME + " TEXT, "
+                + KEY_OPPORTUNITY_END_TIME + " TEXT, "
+                + KEY_OPPORTUNITY_DAY_OF_WEEK + " TEXT);";
+
         // The underlying database
         private SQLiteDatabase carParkDB;
 
@@ -340,6 +415,7 @@ public class DataProvider extends ContentProvider {
             db.execSQL(DATABASE_CREATE_VENUE);
             db.execSQL(DATABASE_CREATE_ACTIVITY);
             db.execSQL(DATABASE_CREATE_SUB_ACTIVITY);
+            db.execSQL(DATABASE_CREATE_OPPORTUNITY);
         }
 
         @Override
@@ -348,6 +424,7 @@ public class DataProvider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + VENUE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + ACTIVITY_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + SUB_ACTIVITY_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + OPPORTUNITY_TABLE);
             onCreate(db);
         }
     }

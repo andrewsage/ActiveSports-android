@@ -11,6 +11,9 @@
     <item android:id="@+id/action_sub_activities"
         android:title="@string/action_sub_activities"
         android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_opportunities"
+        android:title="@string/action_opportunities"
+        android:showAsAction="ifRoom" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

@@ -89,6 +89,7 @@ public class DataUpdateService extends IntentService {
         refreshVenues();
         refreshActivities();
         refreshSubActivities();
+        refreshOpportunities();
     }
 
     private void refreshVenues() {
@@ -224,6 +225,55 @@ public class DataUpdateService extends IntentService {
     }
 
 
+    private void refreshOpportunities() {
+        // Get the JSON
+        URL url;
+        try {
+            String venuesFeed = getString(R.string.opportunities_feed);
+            url = new URL(venuesFeed);
+
+            URLConnection connection;
+            connection = url.openConnection();
+
+            HttpURLConnection httpConnection = (HttpURLConnection)connection;
+            int responseCode = httpConnection.getResponseCode();
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+                InputStream in = httpConnection.getInputStream();
+
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                StringBuilder responseStrBuilder = new StringBuilder();
+
+                String inputStr;
+                while ((inputStr = streamReader.readLine()) != null)
+                    responseStrBuilder.append(inputStr);
+                JSONArray venues = new JSONArray(responseStrBuilder.toString());
+                for(int i = 0; i < venues.length(); i++) {
+                    JSONObject venue = venues.getJSONObject(i);
+
+                    String id = venue.getString("id");
+                    String name = venue.getString("name");
+                    String description = venue.getString("description");
+                    String activity_id = venue.getString("activity_id");
+                    String sub_activity_id = venue.getString("sub_activity_id");
+                    String venue_id = venue.getString("venue_id");
+                    String room = venue.getString("room");
+                    String start_time = venue.getString("start_time");
+                    String end_time = venue.getString("end_time");
+                    String day_of_week = venue.getString("day_of_week");
+
+                    addNewOpportunity(id, name, description, activity_id, sub_activity_id, venue_id, room, start_time, end_time, day_of_week);
+                }
+            }
+        } catch (MalformedURLException e) {
+            Log.d(TAG, "MalformedURLException");
+        } catch (IOException e) {
+            Log.d(TAG, "IOException");
+        } catch (JSONException e) {
+            Log.d(TAG, "JSONException");
+        } finally {
+        }
+    }
+
     private void addNewVenue(String id, String name, String address, String postcode, String latitude, String longitude, String web, String email, String telephone) {
         ContentResolver cr = getContentResolver();
 
@@ -327,6 +377,45 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_SUB_ACTIVITY_ACTIVITY_ID, activity_id);
 
             cr.update(DataProvider.CONTENT_URI_SUB_ACTIVITIES, values, w, null);
+        }
+        query.close();
+    }
+
+    private void addNewOpportunity(String id, String name, String description, String activity_id, String sub_activity_id, String venue_id, String room, String start_time, String end_time, String day_of_week) {
+        ContentResolver cr = getContentResolver();
+
+        // Construct a where clause to make sure we don't already have this venue in the provider
+        String w = DataProvider.KEY_OPPORTUNITY_ID + " = '" + id + "'";
+
+        // If the venue is new, insert it into the provider
+        Cursor query = cr.query(DataProvider.CONTENT_URI_OPPORTUNITIES, null, w, null, null);
+        if(query.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.KEY_OPPORTUNITY_ID, id);
+            values.put(DataProvider.KEY_OPPORTUNITY_NAME, name);
+            values.put(DataProvider.KEY_OPPORTUNITY_DESCRIPTION, description);
+            values.put(DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID, activity_id);
+            values.put(DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID, sub_activity_id);
+            values.put(DataProvider.KEY_OPPORTUNITY_VENUE_ID, venue_id);
+            values.put(DataProvider.KEY_OPPORTUNITY_ROOM, room);
+            values.put(DataProvider.KEY_OPPORTUNITY_START_TIME, start_time);
+            values.put(DataProvider.KEY_OPPORTUNITY_END_TIME, end_time);
+            values.put(DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK, day_of_week);
+
+            cr.insert(DataProvider.CONTENT_URI_OPPORTUNITIES, values);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.KEY_OPPORTUNITY_NAME, name);
+            values.put(DataProvider.KEY_OPPORTUNITY_DESCRIPTION, description);
+            values.put(DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID, activity_id);
+            values.put(DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID, sub_activity_id);
+            values.put(DataProvider.KEY_OPPORTUNITY_VENUE_ID, venue_id);
+            values.put(DataProvider.KEY_OPPORTUNITY_ROOM, room);
+            values.put(DataProvider.KEY_OPPORTUNITY_START_TIME, start_time);
+            values.put(DataProvider.KEY_OPPORTUNITY_END_TIME, end_time);
+            values.put(DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK, day_of_week);
+
+            cr.update(DataProvider.CONTENT_URI_OPPORTUNITIES, values, w, null);
         }
         query.close();
     }

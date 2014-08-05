@@ -52,6 +52,13 @@ public class MainActivity extends ActionBarActivity implements VenueFragment.OnF
 
             return true;
         }
+        if (id == R.id.action_opportunities) {
+
+            Intent intent = new Intent(this, OpportunitiesActivity.class);
+            startActivity(intent);
+
+            return true;
+        }
         if (id == R.id.action_settings) {
             return true;
         }
