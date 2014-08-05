@@ -14,12 +14,14 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class VenueProvider extends ContentProvider {
+public class DataProvider extends ContentProvider {
 
-    public static final Uri CONTENT_URI = Uri.parse("content://com.xoverto.matchthecity/venues");
+    public static final Uri CONTENT_URI_VENUES = Uri.parse("content://com.xoverto.matchthecity/venues");
+    public static final Uri CONTENT_URI_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/activities");
 
     // Column names
-    public static final String KEY_ID = "_id";
+    public static final String KEY_ID = "_id"; // All tables use this field
+
     public static final String KEY_VENUE_ID = "venue_id";
     public static final String KEY_NAME = "name";
     public static final String KEY_UPDATED = "updated";
@@ -31,9 +33,15 @@ public class VenueProvider extends ContentProvider {
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_POSTCODE = "postcode";
 
+    public static final String KEY_ACTIVITY_ID = "activity_id";
+    public static final String KEY_ACTIVITY_TITLE = "title";
+    public static final String KEY_ACTIVITY_CATEGORY = "category";
+
     // Create the constants used to differentiate between the different URI requests
     private static final int VENUES = 1;
     private static final int VENUE_ID = 2;
+    private static final int ACTIVITIES = 3;
+    private static final int ACTIVITY_ID = 4;
 
     private static final UriMatcher uriMatcher;
 
@@ -44,6 +52,8 @@ public class VenueProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI("com.xoverto.matchthecity", "venues", VENUES);
         uriMatcher.addURI("com.xoverto.matchthecity", "venues/#", VENUE_ID);
+        uriMatcher.addURI("com.xoverto.matchthecity", "activities", ACTIVITIES);
+        uriMatcher.addURI("com.xoverto.matchthecity", "activities/#", ACTIVITY_ID);
     }
 
     VenueDatabaseHelper dbHelper;
@@ -58,9 +68,20 @@ public class VenueProvider extends ContentProvider {
                 count = database.delete(VenueDatabaseHelper.VENUE_TABLE, selection, selectionArgs);
                 break;
 
-            case VENUE_ID:
+            case VENUE_ID: {
                 String segment = uri.getPathSegments().get(1);
                 count = database.delete(VenueDatabaseHelper.VENUE_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+                break;
+
+            case ACTIVITIES:
+                count = database.delete(VenueDatabaseHelper.ACTIVITY_TABLE, selection, selectionArgs);
+                break;
+
+            case ACTIVITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(VenueDatabaseHelper.ACTIVITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
                 break;
 
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -76,6 +97,8 @@ public class VenueProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case VENUES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.venues";
             case VENUE_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.venues";
+            case ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.activities";
+            case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.activities";
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
     }
@@ -84,15 +107,37 @@ public class VenueProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        // Insert the new row. The call to the database.insert will return the row number if it is successful.
-        long rowID = database.insert(VenueDatabaseHelper.VENUE_TABLE, "venue", values);
+        switch (uriMatcher.match(uri)) {
+            case VENUES:
+            case VENUE_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(VenueDatabaseHelper.VENUE_TABLE, "venue", values);
 
-        // Return a URI to the newly inserted row on success.
-        if(rowID > 0) {
-            Uri newUri = ContentUris.withAppendedId(CONTENT_URI, rowID);
-            getContext().getContentResolver().notifyChange(CONTENT_URI, null);
-            return newUri;
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_VENUES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_VENUES, null);
+                    return newUri;
+                }
+            }
+            break;
+
+            case ACTIVITIES:
+            case ACTIVITY_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(VenueDatabaseHelper.ACTIVITY_TABLE, "activity", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_ACTIVITIES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_ACTIVITIES, null);
+                    return newUri;
+                }
+            }
+            break;
+
         }
+
 
         throw new SQLException("Failed to insert row into " + uri);
     }
@@ -111,11 +156,27 @@ public class VenueProvider extends ContentProvider {
             String[] selectionArgs, String sortOrder) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(VenueDatabaseHelper.VENUE_TABLE);
+        String defaultSortBy = "";
 
         // If this is a row query, limit the result set to the passed in row
         switch (uriMatcher.match(uri)) {
-            case VENUE_ID: qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
+            case VENUES:
+                qb.setTables(VenueDatabaseHelper.VENUE_TABLE);
+                defaultSortBy = KEY_NAME;
+                break;
+            case VENUE_ID:
+                qb.setTables(VenueDatabaseHelper.VENUE_TABLE);
+                qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
+                defaultSortBy = KEY_NAME;
+                break;
+            case ACTIVITIES:
+                qb.setTables(VenueDatabaseHelper.ACTIVITY_TABLE);
+                defaultSortBy = KEY_ACTIVITY_TITLE;
+                break;
+            case ACTIVITY_ID:
+                qb.setTables(VenueDatabaseHelper.ACTIVITY_TABLE);
+                qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
+                defaultSortBy = KEY_ACTIVITY_TITLE;
                 break;
             default: break;
         }
@@ -123,7 +184,7 @@ public class VenueProvider extends ContentProvider {
         // If no sort order is specified, sort by name
         String orderBy;
         if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = KEY_NAME;
+            orderBy = defaultSortBy;
         } else {
             orderBy = sortOrder;
         }
@@ -153,9 +214,21 @@ public class VenueProvider extends ContentProvider {
                 count = database.update(VenueDatabaseHelper.VENUE_TABLE, values, selection, selectionArgs);
                 break;
 
-            case VENUE_ID:
+            case VENUE_ID: {
                 String segment = uri.getPathSegments().get(1);
                 count = database.update(VenueDatabaseHelper.VENUE_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+                break;
+
+
+            case ACTIVITIES:
+                count = database.update(VenueDatabaseHelper.ACTIVITY_TABLE, values, selection, selectionArgs);
+                break;
+
+            case ACTIVITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.update(VenueDatabaseHelper.ACTIVITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
                 break;
 
             default:
@@ -173,7 +246,8 @@ public class VenueProvider extends ContentProvider {
         private static final String DATABASE_NAME = "venues.db";
         private static final int DATABASE_VERSION = 1;
         private static final String VENUE_TABLE = "venues";
-        private static final String DATABASE_CREATE = "create table " + VENUE_TABLE + " ("
+        private static final String ACTIVITY_TABLE = "activities";
+        private static final String DATABASE_CREATE_VENUE = "create table " + VENUE_TABLE + " ("
                 + KEY_ID + " integer primary key autoincrement, "
                 + KEY_VENUE_ID + " TEXT,"
                 + KEY_NAME + " TEXT, "
@@ -186,6 +260,12 @@ public class VenueProvider extends ContentProvider {
                 + KEY_WEB + " TEXT,"
                 + KEY_EMAIL + " TEXT);";
 
+        private static final String DATABASE_CREATE_ACTIVITY =  "create table " + ACTIVITY_TABLE + " ("
+                + KEY_ID + " integer primary key autoincrement, "
+                + KEY_ACTIVITY_ID + " INTEGER, "
+                + KEY_ACTIVITY_TITLE + " TEXT, "
+                + KEY_ACTIVITY_CATEGORY + " TEXT);";
+
         // The underlying database
         private SQLiteDatabase carParkDB;
 
@@ -196,13 +276,15 @@ public class VenueProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(DATABASE_CREATE);
+            db.execSQL(DATABASE_CREATE_VENUE);
+            db.execSQL(DATABASE_CREATE_ACTIVITY);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + " which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + VENUE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + ACTIVITY_TABLE);
             onCreate(db);
         }
     }

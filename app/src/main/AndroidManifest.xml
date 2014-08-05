@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.xoverto.matchthecity.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,25 +26,25 @@
         </activity>
 
         <service
-            android:name="com.xoverto.matchthecity.DataUpdateService"
+            android:name=".DataUpdateService"
             android:exported="false" >
         </service>
 
-        <receiver android:name="com.xoverto.matchthecity.DataAlarmReceiver" >
+        <receiver android:name=".DataAlarmReceiver" >
             <intent-filter>
                 <action android:name="com.xoverto.matchthecity.ACTION_REFRESH_DATA" />
             </intent-filter>
         </receiver>
 
         <provider
-            android:name="com.xoverto.matchthecity.VenueProvider"
+            android:name=".DataProvider"
             android:authorities="com.xoverto.matchthecity"
             android:enabled="true"
             android:exported="true" >
         </provider>
 
         <activity
-            android:name="com.xoverto.matchthecity.MapsActivity"
+            android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -58,7 +58,14 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
-
+        <activity
+            android:name=".ActivitiesActivity"
+            android:label="@string/title_activity_activities"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.xoverto.matchthecity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -17,7 +17,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,8 +26,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -89,6 +86,11 @@ public class DataUpdateService extends IntentService {
     }
 
     public void refreshData() {
+        refreshVenues();
+        refreshActivities();
+    }
+
+    private void refreshVenues() {
         // Get the JSON
         URL url;
         try {
@@ -136,21 +138,60 @@ public class DataUpdateService extends IntentService {
         }
     }
 
+    private void refreshActivities() {
+        // Get the JSON
+        URL url;
+        try {
+            String venuesFeed = getString(R.string.activities_feed);
+            url = new URL(venuesFeed);
+
+            URLConnection connection;
+            connection = url.openConnection();
+
+            HttpURLConnection httpConnection = (HttpURLConnection)connection;
+            int responseCode = httpConnection.getResponseCode();
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+                InputStream in = httpConnection.getInputStream();
+
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                StringBuilder responseStrBuilder = new StringBuilder();
+
+                String inputStr;
+                while ((inputStr = streamReader.readLine()) != null)
+                    responseStrBuilder.append(inputStr);
+                JSONArray venues = new JSONArray(responseStrBuilder.toString());
+                for(int i = 0; i < venues.length(); i++) {
+                    JSONObject venue = venues.getJSONObject(i);
+
+                    String id = venue.getString("id");
+                    String title = venue.getString("title");
+                    String category = venue.getString("category");
+
+                    addNewActivity(id, title, category);
+                }
+            }
+        } catch (MalformedURLException e) {
+            Log.d(TAG, "MalformedURLException");
+        } catch (IOException e) {
+            Log.d(TAG, "IOException");
+        } catch (JSONException e) {
+            Log.d(TAG, "JSONException");
+        } finally {
+        }
+    }
+
     private void addNewVenue(String id, String name, String address, String postcode, String latitude, String longitude, String web, String email, String telephone) {
-
-
-
         ContentResolver cr = getContentResolver();
 
         // Construct a where clause to make sure we don't already have this venue in the provider
-        String w = VenueProvider.KEY_NAME + " = '" + name + "'";
+        String w = DataProvider.KEY_NAME + " = '" + name + "'";
 
         // If the venue is new, insert it into the provider
-        Cursor query = cr.query(VenueProvider.CONTENT_URI, null, w, null, null);
+        Cursor query = cr.query(DataProvider.CONTENT_URI_VENUES, null, w, null, null);
         if(query.getCount() == 0) {
             ContentValues values = new ContentValues();
-            values.put(VenueProvider.KEY_VENUE_ID, id);
-            values.put(VenueProvider.KEY_NAME, name);
+            values.put(DataProvider.KEY_VENUE_ID, id);
+            values.put(DataProvider.KEY_NAME, name);
 
             Double latPosition = 0.0;
             Double longPosition = 0.0;
@@ -164,16 +205,16 @@ public class DataUpdateService extends IntentService {
                 Log.d(TAG, "Location parsing exception for " + name, e);
             }
 
-            values.put(VenueProvider.KEY_LOCATION_LAT, latPosition);
-            values.put(VenueProvider.KEY_LOCATION_LNG, longPosition);
-            values.put(VenueProvider.KEY_UPDATED, java.lang.System.currentTimeMillis());
+            values.put(DataProvider.KEY_LOCATION_LAT, latPosition);
+            values.put(DataProvider.KEY_LOCATION_LNG, longPosition);
+            values.put(DataProvider.KEY_UPDATED, java.lang.System.currentTimeMillis());
 
 
-            cr.insert(VenueProvider.CONTENT_URI, values);
+            cr.insert(DataProvider.CONTENT_URI_VENUES, values);
         } else {
             ContentValues values = new ContentValues();
-            values.put(VenueProvider.KEY_VENUE_ID, id);
-            values.put(VenueProvider.KEY_NAME, name);
+            values.put(DataProvider.KEY_VENUE_ID, id);
+            values.put(DataProvider.KEY_NAME, name);
 
             Double latPosition = 0.0;
             Double longPosition = 0.0;
@@ -187,11 +228,36 @@ public class DataUpdateService extends IntentService {
                 Log.d(TAG, "Location parsing exception for " + name, e);
             }
 
-            values.put(VenueProvider.KEY_LOCATION_LAT, latPosition);
-            values.put(VenueProvider.KEY_LOCATION_LNG, longPosition);
-            values.put(VenueProvider.KEY_UPDATED, java.lang.System.currentTimeMillis());
+            values.put(DataProvider.KEY_LOCATION_LAT, latPosition);
+            values.put(DataProvider.KEY_LOCATION_LNG, longPosition);
+            values.put(DataProvider.KEY_UPDATED, java.lang.System.currentTimeMillis());
 
-            cr.update(VenueProvider.CONTENT_URI, values, w, null);
+            cr.update(DataProvider.CONTENT_URI_VENUES, values, w, null);
+        }
+        query.close();
+    }
+
+    private void addNewActivity(String id, String title, String category) {
+        ContentResolver cr = getContentResolver();
+
+        // Construct a where clause to make sure we don't already have this venue in the provider
+        String w = DataProvider.KEY_ACTIVITY_ID + " = '" + id + "'";
+
+        // If the venue is new, insert it into the provider
+        Cursor query = cr.query(DataProvider.CONTENT_URI_ACTIVITIES, null, w, null, null);
+        if(query.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.KEY_ACTIVITY_ID, id);
+            values.put(DataProvider.KEY_ACTIVITY_TITLE, title);
+            values.put(DataProvider.KEY_ACTIVITY_CATEGORY, category);
+
+            cr.insert(DataProvider.CONTENT_URI_ACTIVITIES, values);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.KEY_ACTIVITY_TITLE, title);
+            values.put(DataProvider.KEY_ACTIVITY_CATEGORY, category);
+
+            cr.update(DataProvider.CONTENT_URI_ACTIVITIES, values, w, null);
         }
         query.close();
     }

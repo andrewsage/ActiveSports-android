@@ -1,25 +1,19 @@
 package com.xoverto.matchthecity;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.model.LatLng;
-
-
-public class MainActivity extends ActionBarActivity implements VenueFragment.OnFragmentInteractionListener {
-
-    public final static String EXTRA_VENUE_LOCATION = "com.xoverto.matchthecity.VENUE_LOCATION";
+public class ActivitiesActivity extends ActionBarActivity implements ActivityFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_activities);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new VenueFragment())
+                    .add(R.id.container, new ActivityFragment())
                     .commit();
         }
     }
@@ -28,7 +22,7 @@ public class MainActivity extends ActionBarActivity implements VenueFragment.OnF
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activities, menu);
         return true;
     }
 
@@ -38,13 +32,6 @@ public class MainActivity extends ActionBarActivity implements VenueFragment.OnF
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_activities) {
-
-            Intent intent = new Intent(this, ActivitiesActivity.class);
-            startActivity(intent);
-
-            return true;
-        }
         if (id == R.id.action_settings) {
             return true;
         }
@@ -52,9 +39,7 @@ public class MainActivity extends ActionBarActivity implements VenueFragment.OnF
     }
 
     @Override
-    public void onFragmentInteraction(LatLng latLng) {
-        Intent intent = new Intent(this, MapsActivity.class);
-        intent.putExtra(EXTRA_VENUE_LOCATION, latLng);
-        startActivity(intent);
+    public void onFragmentInteraction(String message) {
+
     }
 }

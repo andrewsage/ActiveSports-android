@@ -16,7 +16,6 @@ import android.widget.RadioGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -124,15 +123,15 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
-                VenueProvider.KEY_ID,
-                VenueProvider.KEY_NAME,
-                VenueProvider.KEY_VENUE_ID,
-                VenueProvider.KEY_LOCATION_LAT,
-                VenueProvider.KEY_LOCATION_LNG,
-                VenueProvider.KEY_UPDATED
+                DataProvider.KEY_ID,
+                DataProvider.KEY_NAME,
+                DataProvider.KEY_VENUE_ID,
+                DataProvider.KEY_LOCATION_LAT,
+                DataProvider.KEY_LOCATION_LNG,
+                DataProvider.KEY_UPDATED
         };
         CursorLoader loader = new CursorLoader(this,
-                VenueProvider.CONTENT_URI,
+                DataProvider.CONTENT_URI_VENUES,
                 projection, null, null, null);
 
         return loader;
@@ -154,10 +153,10 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
 
 
         for(int i = 0; i < locationCount; i++) {
-            lat = cursor.getDouble(cursor.getColumnIndex(VenueProvider.KEY_LOCATION_LAT));
-            lng = cursor.getDouble(cursor.getColumnIndex(VenueProvider.KEY_LOCATION_LNG));
-            name = cursor.getString(cursor.getColumnIndex(VenueProvider.KEY_NAME));
-            updated = cursor.getLong(cursor.getColumnIndex(VenueProvider.KEY_UPDATED));
+            lat = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
+            lng = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
+            name = cursor.getString(cursor.getColumnIndex(DataProvider.KEY_NAME));
+            updated = cursor.getLong(cursor.getColumnIndex(DataProvider.KEY_UPDATED));
 
             LatLng location = new LatLng(lat, lng);
 

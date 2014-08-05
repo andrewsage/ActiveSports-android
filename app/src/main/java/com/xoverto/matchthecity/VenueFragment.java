@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -21,10 +20,6 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.maps.model.LatLng;
-import com.xoverto.matchthecity.dummy.DummyContent;
-
-import java.util.List;
-import java.util.logging.Handler;
 
 /**
  * A fragment representing a list of Items.
@@ -82,7 +77,7 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
         mCursorAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_1,
                 null,
-                new String[] { VenueProvider.KEY_NAME},
+                new String[] { DataProvider.KEY_NAME},
                 new int[] { android.R.id.text1}, 0);
 
 
@@ -127,9 +122,9 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
 
         Cursor cursor = (Cursor)mCursorAdapter.getItem(position);
         String value = cursor.getString(cursor
-                .getColumnIndex(VenueProvider.KEY_NAME));
-        double lat = cursor.getDouble(cursor.getColumnIndex(VenueProvider.KEY_LOCATION_LAT));
-        double lng = cursor.getDouble(cursor.getColumnIndex(VenueProvider.KEY_LOCATION_LNG));
+                .getColumnIndex(DataProvider.KEY_NAME));
+        double lat = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
+        double lng = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
 
         LatLng venueLatLng = new LatLng(lat, lng);
 
@@ -173,15 +168,15 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
-                VenueProvider.KEY_ID,
-                VenueProvider.KEY_NAME,
-                VenueProvider.KEY_VENUE_ID,
-                VenueProvider.KEY_LOCATION_LAT,
-                VenueProvider.KEY_LOCATION_LNG,
-                VenueProvider.KEY_UPDATED
+                DataProvider.KEY_ID,
+                DataProvider.KEY_NAME,
+                DataProvider.KEY_VENUE_ID,
+                DataProvider.KEY_LOCATION_LAT,
+                DataProvider.KEY_LOCATION_LNG,
+                DataProvider.KEY_UPDATED
         };
         CursorLoader loader = new CursorLoader(getActivity(),
-                VenueProvider.CONTENT_URI,
+                DataProvider.CONTENT_URI_VENUES,
                 projection, null, null, null);
 
         return loader;
