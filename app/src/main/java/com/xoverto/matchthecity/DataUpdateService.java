@@ -88,6 +88,7 @@ public class DataUpdateService extends IntentService {
     public void refreshData() {
         refreshVenues();
         refreshActivities();
+        refreshSubActivities();
     }
 
     private void refreshVenues() {
@@ -180,6 +181,49 @@ public class DataUpdateService extends IntentService {
         }
     }
 
+    private void refreshSubActivities() {
+        // Get the JSON
+        URL url;
+        try {
+            String venuesFeed = getString(R.string.sub_activities_feed);
+            url = new URL(venuesFeed);
+
+            URLConnection connection;
+            connection = url.openConnection();
+
+            HttpURLConnection httpConnection = (HttpURLConnection)connection;
+            int responseCode = httpConnection.getResponseCode();
+            if(responseCode == HttpURLConnection.HTTP_OK) {
+                InputStream in = httpConnection.getInputStream();
+
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                StringBuilder responseStrBuilder = new StringBuilder();
+
+                String inputStr;
+                while ((inputStr = streamReader.readLine()) != null)
+                    responseStrBuilder.append(inputStr);
+                JSONArray venues = new JSONArray(responseStrBuilder.toString());
+                for(int i = 0; i < venues.length(); i++) {
+                    JSONObject venue = venues.getJSONObject(i);
+
+                    String id = venue.getString("id");
+                    String title = venue.getString("title");
+                    String activity_id = venue.getString("activity_id");
+
+                    addNewSubActivity(id, title, activity_id);
+                }
+            }
+        } catch (MalformedURLException e) {
+            Log.d(TAG, "MalformedURLException");
+        } catch (IOException e) {
+            Log.d(TAG, "IOException");
+        } catch (JSONException e) {
+            Log.d(TAG, "JSONException");
+        } finally {
+        }
+    }
+
+
     private void addNewVenue(String id, String name, String address, String postcode, String latitude, String longitude, String web, String email, String telephone) {
         ContentResolver cr = getContentResolver();
 
@@ -258,6 +302,31 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_ACTIVITY_CATEGORY, category);
 
             cr.update(DataProvider.CONTENT_URI_ACTIVITIES, values, w, null);
+        }
+        query.close();
+    }
+
+    private void addNewSubActivity(String id, String title, String activity_id) {
+        ContentResolver cr = getContentResolver();
+
+        // Construct a where clause to make sure we don't already have this venue in the provider
+        String w = DataProvider.KEY_SUB_ACTIVITY_ID + " = '" + id + "'";
+
+        // If the venue is new, insert it into the provider
+        Cursor query = cr.query(DataProvider.CONTENT_URI_SUB_ACTIVITIES, null, w, null, null);
+        if(query.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.KEY_SUB_ACTIVITY_ID, id);
+            values.put(DataProvider.KEY_SUB_ACTIVITY_TITLE, title);
+            values.put(DataProvider.KEY_SUB_ACTIVITY_ACTIVITY_ID, activity_id);
+
+            cr.insert(DataProvider.CONTENT_URI_SUB_ACTIVITIES, values);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(DataProvider.KEY_SUB_ACTIVITY_TITLE, title);
+            values.put(DataProvider.KEY_SUB_ACTIVITY_ACTIVITY_ID, activity_id);
+
+            cr.update(DataProvider.CONTENT_URI_SUB_ACTIVITIES, values, w, null);
         }
         query.close();
     }

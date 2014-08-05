@@ -66,6 +66,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.xoverto.matchthecity.MainActivity" />
         </activity>
+        <activity
+            android:name=".SubActivitiesActivity"
+            android:label="@string/title_activity_sub_activities"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.xoverto.matchthecity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

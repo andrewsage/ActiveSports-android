@@ -18,6 +18,7 @@ public class DataProvider extends ContentProvider {
 
     public static final Uri CONTENT_URI_VENUES = Uri.parse("content://com.xoverto.matchthecity/venues");
     public static final Uri CONTENT_URI_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/activities");
+    public static final Uri CONTENT_URI_SUB_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/sub_activities");
 
     // Column names
     public static final String KEY_ID = "_id"; // All tables use this field
@@ -37,11 +38,17 @@ public class DataProvider extends ContentProvider {
     public static final String KEY_ACTIVITY_TITLE = "title";
     public static final String KEY_ACTIVITY_CATEGORY = "category";
 
+    public static final String KEY_SUB_ACTIVITY_ID = "sub_activity_id";
+    public static final String KEY_SUB_ACTIVITY_ACTIVITY_ID = "activity_id";
+    public static final String KEY_SUB_ACTIVITY_TITLE = "title";
+
     // Create the constants used to differentiate between the different URI requests
     private static final int VENUES = 1;
     private static final int VENUE_ID = 2;
     private static final int ACTIVITIES = 3;
     private static final int ACTIVITY_ID = 4;
+    private static final int SUB_ACTIVITIES = 5;
+    private static final int SUB_ACTIVITY_ID = 6;
 
     private static final UriMatcher uriMatcher;
 
@@ -54,6 +61,8 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI("com.xoverto.matchthecity", "venues/#", VENUE_ID);
         uriMatcher.addURI("com.xoverto.matchthecity", "activities", ACTIVITIES);
         uriMatcher.addURI("com.xoverto.matchthecity", "activities/#", ACTIVITY_ID);
+        uriMatcher.addURI("com.xoverto.matchthecity", "sub_activities", SUB_ACTIVITIES);
+        uriMatcher.addURI("com.xoverto.matchthecity", "sub_activities/#", SUB_ACTIVITY_ID);
     }
 
     VenueDatabaseHelper dbHelper;
@@ -84,6 +93,16 @@ public class DataProvider extends ContentProvider {
             }
                 break;
 
+            case SUB_ACTIVITIES:
+                count = database.delete(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, selection, selectionArgs);
+                break;
+
+            case SUB_ACTIVITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+            break;
+
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
@@ -99,6 +118,8 @@ public class DataProvider extends ContentProvider {
             case VENUE_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.venues";
             case ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.activities";
             case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.activities";
+            case SUB_ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.sub_activities";
+            case SUB_ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.sub_activities";
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
     }
@@ -131,6 +152,20 @@ public class DataProvider extends ContentProvider {
                 if(rowID > 0) {
                     Uri newUri = ContentUris.withAppendedId(CONTENT_URI_ACTIVITIES, rowID);
                     getContext().getContentResolver().notifyChange(CONTENT_URI_ACTIVITIES, null);
+                    return newUri;
+                }
+            }
+            break;
+
+            case SUB_ACTIVITIES:
+            case SUB_ACTIVITY_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, "sub_activity", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_SUB_ACTIVITIES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_SUB_ACTIVITIES, null);
                     return newUri;
                 }
             }
@@ -177,6 +212,15 @@ public class DataProvider extends ContentProvider {
                 qb.setTables(VenueDatabaseHelper.ACTIVITY_TABLE);
                 qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
                 defaultSortBy = KEY_ACTIVITY_TITLE;
+                break;
+            case SUB_ACTIVITIES:
+                qb.setTables(VenueDatabaseHelper.SUB_ACTIVITY_TABLE);
+                defaultSortBy = KEY_SUB_ACTIVITY_TITLE;
+                break;
+            case SUB_ACTIVITY_ID:
+                qb.setTables(VenueDatabaseHelper.SUB_ACTIVITY_TABLE);
+                qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
+                defaultSortBy = KEY_SUB_ACTIVITY_TITLE;
                 break;
             default: break;
         }
@@ -231,6 +275,16 @@ public class DataProvider extends ContentProvider {
             }
                 break;
 
+            case SUB_ACTIVITIES:
+                count = database.update(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, values, selection, selectionArgs);
+                break;
+
+            case SUB_ACTIVITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.update(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+            break;
+
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -244,9 +298,10 @@ public class DataProvider extends ContentProvider {
     private static class VenueDatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "VenueProvider";
         private static final String DATABASE_NAME = "venues.db";
-        private static final int DATABASE_VERSION = 1;
+        private static final int DATABASE_VERSION = 2;
         private static final String VENUE_TABLE = "venues";
         private static final String ACTIVITY_TABLE = "activities";
+        private static final String SUB_ACTIVITY_TABLE = "sub_activities";
         private static final String DATABASE_CREATE_VENUE = "create table " + VENUE_TABLE + " ("
                 + KEY_ID + " integer primary key autoincrement, "
                 + KEY_VENUE_ID + " TEXT,"
@@ -266,6 +321,12 @@ public class DataProvider extends ContentProvider {
                 + KEY_ACTIVITY_TITLE + " TEXT, "
                 + KEY_ACTIVITY_CATEGORY + " TEXT);";
 
+        private static final String DATABASE_CREATE_SUB_ACTIVITY =  "create table " + SUB_ACTIVITY_TABLE + " ("
+                + KEY_ID + " integer primary key autoincrement, "
+                + KEY_SUB_ACTIVITY_ID + " INTEGER, "
+                + KEY_SUB_ACTIVITY_TITLE + " TEXT, "
+                + KEY_SUB_ACTIVITY_ACTIVITY_ID + " INTEGER);";
+
         // The underlying database
         private SQLiteDatabase carParkDB;
 
@@ -278,6 +339,7 @@ public class DataProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(DATABASE_CREATE_VENUE);
             db.execSQL(DATABASE_CREATE_ACTIVITY);
+            db.execSQL(DATABASE_CREATE_SUB_ACTIVITY);
         }
 
         @Override
@@ -285,6 +347,7 @@ public class DataProvider extends ContentProvider {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + " which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + VENUE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + ACTIVITY_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + SUB_ACTIVITY_TABLE);
             onCreate(db);
         }
     }
