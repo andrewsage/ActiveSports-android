@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 import android.app.AlarmManager;
 import android.app.IntentService;

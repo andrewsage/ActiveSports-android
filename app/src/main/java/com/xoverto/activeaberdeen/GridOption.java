@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 /**
  * Created by andrew on 29/12/14.

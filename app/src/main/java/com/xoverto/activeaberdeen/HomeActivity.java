@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -6,12 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
-import android.widget.GridView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class HomeActivity extends ActionBarActivity {

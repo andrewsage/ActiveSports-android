@@ -1,27 +1,20 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 
-
-public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFragment.OnFragmentInteractionListener {
+public class SubActivitiesActivity extends ActionBarActivity implements SubActivityFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_opportunities);
+        setContentView(R.layout.activity_sub_activities);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new OpportunityFragment())
+                    .add(R.id.container, new SubActivityFragment())
                     .commit();
         }
     }
@@ -30,7 +23,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.opportunities, menu);
+        getMenuInflater().inflate(R.menu.sub_activities, menu);
         return true;
     }
 

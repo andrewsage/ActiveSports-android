@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 import android.app.Activity;
 import android.app.LoaderManager;
@@ -7,7 +7,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,14 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import com.xoverto.matchthecity.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.

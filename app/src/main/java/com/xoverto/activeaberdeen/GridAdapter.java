@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 import android.content.Context;
 import android.view.LayoutInflater;

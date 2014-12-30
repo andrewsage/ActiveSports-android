@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity.dummy;
+package com.xoverto.activeaberdeen.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

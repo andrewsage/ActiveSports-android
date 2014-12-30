@@ -1,4 +1,4 @@
-package com.xoverto.matchthecity;
+package com.xoverto.activeaberdeen;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
