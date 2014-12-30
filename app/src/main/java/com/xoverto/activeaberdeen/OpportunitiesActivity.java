@@ -1,5 +1,6 @@
 package com.xoverto.activeaberdeen;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,6 +8,8 @@ import android.view.MenuItem;
 
 
 public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFragment.OnFragmentInteractionListener {
+
+    public final static String EXTRA_OPPORTUNITY_ID = "com.xoverto.activeaberdeen.OPPORTUNITY_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,10 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
     }
 
     @Override
-    public void onFragmentInteraction(String message) {
+    public void onFragmentInteraction(String value) {
 
+        Intent intent = new Intent(this, OpportunityActivity.class);
+        intent.putExtra(EXTRA_OPPORTUNITY_ID, value);
+        startActivity(intent);
     }
 }

@@ -9,7 +9,7 @@ import android.content.Intent;
  */
 public class DataAlarmReceiver extends BroadcastReceiver {
 
-    public static final String ACTION_REFRESH_DATA_ALARM = "com.xoverto.matchthecity.ACTION_REFRESH_DATA";
+    public static final String ACTION_REFRESH_DATA_ALARM = "com.xoverto.activeaberdeen.ACTION_REFRESH_DATA";
 
     @Override
     public void onReceive(Context context, Intent intent) {

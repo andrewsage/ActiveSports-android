@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends ActionBarActivity implements VenueFragment.OnFragmentInteractionListener {
 
-    public final static String EXTRA_VENUE_LOCATION = "com.xoverto.matchthecity.VENUE_LOCATION";
+    public final static String EXTRA_VENUE_LOCATION = "com.xoverto.activeaberdeen.VENUE_LOCATION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

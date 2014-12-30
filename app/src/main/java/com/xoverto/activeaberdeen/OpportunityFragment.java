@@ -77,7 +77,7 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
                 null,
                 new String[] { DataProvider.KEY_OPPORTUNITY_NAME,
                         DataProvider.KEY_OPPORTUNITY_VENUE_ID,
-                        DataProvider.KEY_OPPORTUNITY_START_TIME
+                        DataProvider.KEY_OPPORTUNITY_START_TIME,
                 },
                 new int[] { R.id.name, R.id.venue, R.id.start_time }, 0);
 
@@ -165,11 +165,8 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         Cursor cursor = (Cursor)mCursorAdapter.getItem(position);
-        String value = cursor.getString(cursor
-                .getColumnIndex(DataProvider.KEY_OPPORTUNITY_NAME));
+        String value = Integer.toString(cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_ID)));
 
-
-        Toast.makeText(parent.getContext(), value, Toast.LENGTH_SHORT).show();
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.

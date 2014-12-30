@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.xoverto.activeaberdeen.OpportunityActivity$PlaceholderFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/information_warning" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/warning"
+            android:background="@android:color/darker_gray"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_below="@+id/warning"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/black" />
+
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/venue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name"
+            android:drawableLeft="@drawable/location_mini"
+            android:drawablePadding="5dip"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/venue"
+            android:drawableLeft="@drawable/time_mini"
+            android:drawablePadding="5dip"
+            android:text="start time"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="normal" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/start_time"
+            android:background="@android:color/darker_gray"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/start_time"
+            android:text="description"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="normal" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/description"
+            android:background="@android:color/darker_gray"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/description"
+            android:drawableLeft="@drawable/location_mini"
+            android:drawablePadding="5dip"
+            android:text="Address"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/telephone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/address"
+            android:drawableLeft="@drawable/location_mini"
+            android:drawablePadding="5dip"
+            android:text="Telephone"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="normal" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/telephone"
+            android:background="@android:color/darker_gray"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/telephone"
+                android:id="@+id/map"
+                tools:context="com.xoverto.activeaberdeen.MapsActivity"
+                android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
