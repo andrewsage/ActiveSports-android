@@ -1,0 +1,75 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/GridLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="2"
+    android:rowCount="2"
+    android:orientation="horizontal"
+    tools:context=".HomeActivity"
+    android:background="@android:color/white"
+    android:useDefaultMargins="true">
+    <Button
+        android:id="@+id/button_today"
+        android:text="What's on today?"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_whats_on"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:text="Advanced Search"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_advanced_search"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:text="Saved Searches"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_saved_searches"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+    <Button
+        android:id="@+id/button4"
+        android:text="Favourite Activities"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_fave_activities"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+    <Button
+        android:id="@+id/button5"
+        android:text="Activity Preferences"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_activity_prefs"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+    <Button
+        android:id="@+id/button_venues"
+        android:text="Venues"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_whats_on"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+    <Button
+        android:id="@+id/button7"
+        android:text="About this app"
+        android:layout_gravity="fill"
+        android:drawableTop="@drawable/home_about"
+        android:textColor="@android:color/white"
+        android:background="@android:color/black"
+        android:padding="2dp" />
+
+</GridLayout>

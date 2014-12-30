@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MatchTheCity</string>
+    <string name="app_name">Active Aberdeen</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_map">Map</string>
     <string name="action_activities">Activities</string>
     <string name="action_sub_activities">Sub Activities</string>
     <string name="action_opportunities">Opportunities</string>
-    <string name="venues_feed">http://matchthecity.herokuapp.com/venues.json</string>
-    <string name="activities_feed">http://matchthecity.herokuapp.com/activities.json</string>
-    <string name="sub_activities_feed">http://matchthecity.herokuapp.com/sub_activities.json</string>
-    <string name="opportunities_feed">http://matchthecity.herokuapp.com/opportunities.json</string>
+    <string name="venues_feed">http://matchthecity.org/regions/4/venues.json</string>
+    <string name="activities_feed">http://matchthecity.org/regions/4/activities.json</string>
+    <string name="sub_activities_feed">http://matchthecity.org/regions/4/sub_activities.json</string>
+    <string name="opportunities_feed">http://matchthecity.org/regions/4/opportunities.json</string>
     <string name="title_activity_maps">Map</string>
     <string name="str_rb_normal">Normal</string>
     <string name="str_rb_hybrid">Hybrid</string>
@@ -19,6 +19,8 @@
     <string name="str_rb_terrain">Terrain</string>
     <string name="title_activity_activities">ActivitiesActivity</string>
     <string name="title_activity_sub_activities">SubActivitiesActivity</string>
-    <string name="title_activity_opportunities">OpportunitiesActivity</string>
+    <string name="title_activity_opportunities">Activities</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_main">Venues</string>
 
 </resources>

@@ -81,156 +81,20 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI("com.xoverto.matchthecity", "opportunities/#", OPPORTUNITY_ID);
     }
 
-    VenueDatabaseHelper dbHelper;
-
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        int count;
-        switch (uriMatcher.match(uri)) {
-            case VENUES:
-                count = database.delete(VenueDatabaseHelper.VENUE_TABLE, selection, selectionArgs);
-                break;
-
-            case VENUE_ID: {
-                String segment = uri.getPathSegments().get(1);
-                count = database.delete(VenueDatabaseHelper.VENUE_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
-            }
-                break;
-
-            case ACTIVITIES:
-                count = database.delete(VenueDatabaseHelper.ACTIVITY_TABLE, selection, selectionArgs);
-                break;
-
-            case ACTIVITY_ID: {
-                String segment = uri.getPathSegments().get(1);
-                count = database.delete(VenueDatabaseHelper.ACTIVITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
-            }
-                break;
-
-            case SUB_ACTIVITIES:
-                count = database.delete(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, selection, selectionArgs);
-                break;
-
-            case SUB_ACTIVITY_ID: {
-                String segment = uri.getPathSegments().get(1);
-                count = database.delete(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
-            }
-            break;
-
-            case OPPORTUNITIES:
-                count = database.delete(VenueDatabaseHelper.OPPORTUNITY_TABLE, selection, selectionArgs);
-                break;
-
-            case OPPORTUNITY_ID: {
-                String segment = uri.getPathSegments().get(1);
-                count = database.delete(VenueDatabaseHelper.OPPORTUNITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
-            }
-            break;
-
-            default: throw new IllegalArgumentException("Unsupported URI: " + uri);
-        }
-
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return count;
-    }
-
-    @Override
-    public String getType(Uri uri) {
-        switch (uriMatcher.match(uri)) {
-            case VENUES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.venues";
-            case VENUE_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.venues";
-            case ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.activities";
-            case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.activities";
-            case SUB_ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.sub_activities";
-            case SUB_ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.sub_activities";
-            case OPPORTUNITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.opportunities";
-            case OPPORTUNITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.opportunities";
-            default: throw new IllegalArgumentException("Unsupported URI: " + uri);
-        }
-    }
-
-    @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        switch (uriMatcher.match(uri)) {
-            case VENUES:
-            case VENUE_ID: {
-                // Insert the new row. The call to the database.insert will return the row number if it is successful.
-                long rowID = database.insert(VenueDatabaseHelper.VENUE_TABLE, "venue", values);
-
-                // Return a URI to the newly inserted row on success.
-                if(rowID > 0) {
-                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_VENUES, rowID);
-                    getContext().getContentResolver().notifyChange(CONTENT_URI_VENUES, null);
-                    return newUri;
-                }
-            }
-            break;
-
-            case ACTIVITIES:
-            case ACTIVITY_ID: {
-                // Insert the new row. The call to the database.insert will return the row number if it is successful.
-                long rowID = database.insert(VenueDatabaseHelper.ACTIVITY_TABLE, "activity", values);
-
-                // Return a URI to the newly inserted row on success.
-                if(rowID > 0) {
-                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_ACTIVITIES, rowID);
-                    getContext().getContentResolver().notifyChange(CONTENT_URI_ACTIVITIES, null);
-                    return newUri;
-                }
-            }
-            break;
-
-            case SUB_ACTIVITIES:
-            case SUB_ACTIVITY_ID: {
-                // Insert the new row. The call to the database.insert will return the row number if it is successful.
-                long rowID = database.insert(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, "sub_activity", values);
-
-                // Return a URI to the newly inserted row on success.
-                if(rowID > 0) {
-                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_SUB_ACTIVITIES, rowID);
-                    getContext().getContentResolver().notifyChange(CONTENT_URI_SUB_ACTIVITIES, null);
-                    return newUri;
-                }
-            }
-            break;
-
-            case OPPORTUNITIES:
-            case OPPORTUNITY_ID: {
-                // Insert the new row. The call to the database.insert will return the row number if it is successful.
-                long rowID = database.insert(VenueDatabaseHelper.OPPORTUNITY_TABLE, "opportunities", values);
-
-                // Return a URI to the newly inserted row on success.
-                if(rowID > 0) {
-                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_OPPORTUNITIES, rowID);
-                    getContext().getContentResolver().notifyChange(CONTENT_URI_OPPORTUNITIES, null);
-                    return newUri;
-                }
-            }
-            break;
-
-        }
-
-
-        throw new SQLException("Failed to insert row into " + uri);
-    }
+    DatabaseHelper dbHelper;
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
 
-        dbHelper = new VenueDatabaseHelper(context, VenueDatabaseHelper.DATABASE_NAME, null, VenueDatabaseHelper.DATABASE_VERSION);
+        dbHelper = new DatabaseHelper(context, DatabaseHelper.DATABASE_NAME, null, DatabaseHelper.DATABASE_VERSION);
 
         return true;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String defaultSortBy = "";
@@ -238,38 +102,38 @@ public class DataProvider extends ContentProvider {
         // If this is a row query, limit the result set to the passed in row
         switch (uriMatcher.match(uri)) {
             case VENUES:
-                qb.setTables(VenueDatabaseHelper.VENUE_TABLE);
+                qb.setTables(DatabaseHelper.VENUE_TABLE);
                 defaultSortBy = KEY_NAME;
                 break;
             case VENUE_ID:
-                qb.setTables(VenueDatabaseHelper.VENUE_TABLE);
+                qb.setTables(DatabaseHelper.VENUE_TABLE);
                 qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
                 defaultSortBy = KEY_NAME;
                 break;
             case ACTIVITIES:
-                qb.setTables(VenueDatabaseHelper.ACTIVITY_TABLE);
+                qb.setTables(DatabaseHelper.ACTIVITY_TABLE);
                 defaultSortBy = KEY_ACTIVITY_TITLE;
                 break;
             case ACTIVITY_ID:
-                qb.setTables(VenueDatabaseHelper.ACTIVITY_TABLE);
+                qb.setTables(DatabaseHelper.ACTIVITY_TABLE);
                 qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
                 defaultSortBy = KEY_ACTIVITY_TITLE;
                 break;
             case SUB_ACTIVITIES:
-                qb.setTables(VenueDatabaseHelper.SUB_ACTIVITY_TABLE);
+                qb.setTables(DatabaseHelper.SUB_ACTIVITY_TABLE);
                 defaultSortBy = KEY_SUB_ACTIVITY_TITLE;
                 break;
             case SUB_ACTIVITY_ID:
-                qb.setTables(VenueDatabaseHelper.SUB_ACTIVITY_TABLE);
+                qb.setTables(DatabaseHelper.SUB_ACTIVITY_TABLE);
                 qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
                 defaultSortBy = KEY_SUB_ACTIVITY_TITLE;
                 break;
             case OPPORTUNITIES:
-                qb.setTables(VenueDatabaseHelper.OPPORTUNITY_TABLE);
+                qb.setTables(DatabaseHelper.OPPORTUNITY_TABLE);
                 defaultSortBy = KEY_OPPORTUNITY_NAME;
                 break;
             case OPPORTUNITY_ID:
-                qb.setTables(VenueDatabaseHelper.OPPORTUNITY_TABLE);
+                qb.setTables(DatabaseHelper.OPPORTUNITY_TABLE);
                 qb.appendWhere(KEY_ID + "=" + uri.getPathSegments().get(1));
                 defaultSortBy = KEY_OPPORTUNITY_NAME;
                 break;
@@ -299,50 +163,115 @@ public class DataProvider extends ContentProvider {
     }
 
     @Override
+    public Uri insert(Uri uri, ContentValues values) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        switch (uriMatcher.match(uri)) {
+            case VENUES:
+            case VENUE_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(DatabaseHelper.VENUE_TABLE, "venue", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_VENUES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_VENUES, null);
+                    return newUri;
+                }
+            }
+            break;
+
+            case ACTIVITIES:
+            case ACTIVITY_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(DatabaseHelper.ACTIVITY_TABLE, "activity", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_ACTIVITIES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_ACTIVITIES, null);
+                    return newUri;
+                }
+            }
+            break;
+
+            case SUB_ACTIVITIES:
+            case SUB_ACTIVITY_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(DatabaseHelper.SUB_ACTIVITY_TABLE, "sub_activity", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_SUB_ACTIVITIES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_SUB_ACTIVITIES, null);
+                    return newUri;
+                }
+            }
+            break;
+
+            case OPPORTUNITIES:
+            case OPPORTUNITY_ID: {
+                // Insert the new row. The call to the database.insert will return the row number if it is successful.
+                long rowID = database.insert(DatabaseHelper.OPPORTUNITY_TABLE, "opportunities", values);
+
+                // Return a URI to the newly inserted row on success.
+                if(rowID > 0) {
+                    Uri newUri = ContentUris.withAppendedId(CONTENT_URI_OPPORTUNITIES, rowID);
+                    getContext().getContentResolver().notifyChange(CONTENT_URI_OPPORTUNITIES, null);
+                    return newUri;
+                }
+            }
+            break;
+        }
+
+        throw new SQLException("Failed to insert row into " + uri);
+    }
+
+    @Override
     public int update(Uri uri, ContentValues values, String selection,
-            String[] selectionArgs) {
+                      String[] selectionArgs) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         int count;
         switch (uriMatcher.match(uri)) {
             case VENUES:
-                count = database.update(VenueDatabaseHelper.VENUE_TABLE, values, selection, selectionArgs);
+                count = database.update(DatabaseHelper.VENUE_TABLE, values, selection, selectionArgs);
                 break;
 
             case VENUE_ID: {
                 String segment = uri.getPathSegments().get(1);
-                count = database.update(VenueDatabaseHelper.VENUE_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = database.update(DatabaseHelper.VENUE_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
             }
-                break;
+            break;
 
 
             case ACTIVITIES:
-                count = database.update(VenueDatabaseHelper.ACTIVITY_TABLE, values, selection, selectionArgs);
+                count = database.update(DatabaseHelper.ACTIVITY_TABLE, values, selection, selectionArgs);
                 break;
 
             case ACTIVITY_ID: {
                 String segment = uri.getPathSegments().get(1);
-                count = database.update(VenueDatabaseHelper.ACTIVITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = database.update(DatabaseHelper.ACTIVITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
             }
-                break;
+            break;
 
             case SUB_ACTIVITIES:
-                count = database.update(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, values, selection, selectionArgs);
+                count = database.update(DatabaseHelper.SUB_ACTIVITY_TABLE, values, selection, selectionArgs);
                 break;
 
             case SUB_ACTIVITY_ID: {
                 String segment = uri.getPathSegments().get(1);
-                count = database.update(VenueDatabaseHelper.SUB_ACTIVITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = database.update(DatabaseHelper.SUB_ACTIVITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
             }
             break;
 
             case OPPORTUNITIES:
-                count = database.update(VenueDatabaseHelper.OPPORTUNITY_TABLE, values, selection, selectionArgs);
+                count = database.update(DatabaseHelper.OPPORTUNITY_TABLE, values, selection, selectionArgs);
                 break;
 
             case OPPORTUNITY_ID: {
                 String segment = uri.getPathSegments().get(1);
-                count = database.update(VenueDatabaseHelper.OPPORTUNITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = database.update(DatabaseHelper.OPPORTUNITY_TABLE, values, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
             }
             break;
 
@@ -355,8 +284,78 @@ public class DataProvider extends ContentProvider {
         return count;
     }
 
+
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        int count;
+        switch (uriMatcher.match(uri)) {
+            case VENUES:
+                count = database.delete(DatabaseHelper.VENUE_TABLE, selection, selectionArgs);
+                break;
+
+            case VENUE_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(DatabaseHelper.VENUE_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+                break;
+
+            case ACTIVITIES:
+                count = database.delete(DatabaseHelper.ACTIVITY_TABLE, selection, selectionArgs);
+                break;
+
+            case ACTIVITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(DatabaseHelper.ACTIVITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+                break;
+
+            case SUB_ACTIVITIES:
+                count = database.delete(DatabaseHelper.SUB_ACTIVITY_TABLE, selection, selectionArgs);
+                break;
+
+            case SUB_ACTIVITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(DatabaseHelper.SUB_ACTIVITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+            break;
+
+            case OPPORTUNITIES:
+                count = database.delete(DatabaseHelper.OPPORTUNITY_TABLE, selection, selectionArgs);
+                break;
+
+            case OPPORTUNITY_ID: {
+                String segment = uri.getPathSegments().get(1);
+                count = database.delete(DatabaseHelper.OPPORTUNITY_TABLE, KEY_ID + "=" + segment + (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+            }
+            break;
+
+            default: throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return count;
+    }
+
+    @Override
+    public String getType(Uri uri) {
+        switch (uriMatcher.match(uri)) {
+            case VENUES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.venues";
+            case VENUE_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.venues";
+            case ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.activities";
+            case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.activities";
+            case SUB_ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.sub_activities";
+            case SUB_ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.sub_activities";
+            case OPPORTUNITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.opportunities";
+            case OPPORTUNITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.opportunities";
+            default: throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
+    }
+
     // Helper class for opening, creating and managing database version control
-    private static class VenueDatabaseHelper extends SQLiteOpenHelper {
+    private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "VenueProvider";
         private static final String DATABASE_NAME = "venues.db";
         private static final int DATABASE_VERSION = 3;
@@ -405,7 +404,7 @@ public class DataProvider extends ContentProvider {
         // The underlying database
         private SQLiteDatabase carParkDB;
 
-        public VenueDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
 
             super(context, name, factory, version);
         }

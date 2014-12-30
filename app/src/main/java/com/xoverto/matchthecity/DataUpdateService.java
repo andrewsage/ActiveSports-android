@@ -279,9 +279,12 @@ public class DataUpdateService extends IntentService {
 
         // Construct a where clause to make sure we don't already have this venue in the provider
         String w = DataProvider.KEY_NAME + " = '" + name + "'";
+        w = DataProvider.KEY_NAME + "=?";
+
+        String[] selectionArgs = { name };
 
         // If the venue is new, insert it into the provider
-        Cursor query = cr.query(DataProvider.CONTENT_URI_VENUES, null, w, null, null);
+        Cursor query = cr.query(DataProvider.CONTENT_URI_VENUES, null, w, selectionArgs, null);
         if(query.getCount() == 0) {
             ContentValues values = new ContentValues();
             values.put(DataProvider.KEY_VENUE_ID, id);
