@@ -77,18 +77,23 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
                 null,
                 new String[] { DataProvider.KEY_OPPORTUNITY_NAME,
                         DataProvider.KEY_OPPORTUNITY_VENUE_ID,
-                        DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID,
-                        DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID,
-                        DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK,
-                        DataProvider.KEY_OPPORTUNITY_START_TIME,
-                        DataProvider.KEY_OPPORTUNITY_END_TIME,
-                        DataProvider.KEY_OPPORTUNITY_DESCRIPTION
+                        DataProvider.KEY_OPPORTUNITY_START_TIME
                 },
-                new int[] { R.id.name, R.id.venue, R.id.activity, R.id.sub_activity, R.id.day, R.id.start_time, R.id.end_time, R.id.description }, 0);
+                new int[] { R.id.name, R.id.venue, R.id.start_time }, 0);
 
 
         mCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             public boolean setViewValue(View view, Cursor cursor, int column) {
+
+                if (view.getId() == R.id.start_time) {
+                    TextView text = (TextView)view.findViewById(R.id.start_time);
+                    String label = "" + cursor.getString(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK))
+                            + " " + cursor.getString(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_START_TIME))
+                            + "-" + cursor.getString(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_END_TIME));
+                    text.setText(label);
+
+                    return true;
+                }
 
                 if (view.getId() == R.id.venue) {
                     int venue_id = cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_VENUE_ID));
@@ -115,54 +120,6 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
                     return true;
                 }
 
-                if (view.getId() == R.id.activity) {
-                    int activity_id = cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_ACTIVITY_ID));
-
-                    ContentResolver cr = view.getContext().getContentResolver();
-
-                    // Construct a where clause to make sure we don't already have this carpark in the provider
-                    String w = DataProvider.KEY_ACTIVITY_ID + " = '" + activity_id + "'";
-                    String label = "unknown activity";
-
-                    // If the carpark is new, insert it into the provider
-                    Cursor query = cr.query(DataProvider.CONTENT_URI_ACTIVITIES, null, w, null, null);
-
-                    if(query.getCount() > 0) {
-                        query.moveToFirst();
-                        label = query.getString(query.getColumnIndex(DataProvider.KEY_ACTIVITY_TITLE));
-                    }
-                    query.close();
-
-
-                    TextView text = (TextView)view.findViewById(R.id.activity);
-                    text.setText(label);
-
-                    return true;
-                }
-
-                if (view.getId() == R.id.sub_activity) {
-                    int sub_activity_id = cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_SUB_ACTIVITY_ID));
-
-                    ContentResolver cr = view.getContext().getContentResolver();
-
-                    // Construct a where clause to make sure we don't already have this carpark in the provider
-                    String w = DataProvider.KEY_SUB_ACTIVITY_ID + " = '" + sub_activity_id + "'";
-                    String label = "unknown sub activity";
-
-                    // If the carpark is new, insert it into the provider
-                    Cursor query = cr.query(DataProvider.CONTENT_URI_SUB_ACTIVITIES, null, w, null, null);
-
-                    if(query.getCount() > 0) {
-                        query.moveToFirst();
-                        label = query.getString(query.getColumnIndex(DataProvider.KEY_SUB_ACTIVITY_TITLE));
-                    }
-                    query.close();
-
-                    TextView text = (TextView)view.findViewById(R.id.sub_activity);
-                    text.setText(label);
-
-                    return true;
-                }
 
                 return false;
             }

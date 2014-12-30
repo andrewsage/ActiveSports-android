@@ -16,10 +16,10 @@ import android.util.Log;
 
 public class DataProvider extends ContentProvider {
 
-    public static final Uri CONTENT_URI_VENUES = Uri.parse("content://com.xoverto.matchthecity/venues");
-    public static final Uri CONTENT_URI_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/activities");
-    public static final Uri CONTENT_URI_SUB_ACTIVITIES = Uri.parse("content://com.xoverto.matchthecity/sub_activities");
-    public static final Uri CONTENT_URI_OPPORTUNITIES = Uri.parse("content://com.xoverto.matchthecity/opportunities");
+    public static final Uri CONTENT_URI_VENUES = Uri.parse("content://com.xoverto.activeaberdeen/venues");
+    public static final Uri CONTENT_URI_ACTIVITIES = Uri.parse("content://com.xoverto.activeaberdeen/activities");
+    public static final Uri CONTENT_URI_SUB_ACTIVITIES = Uri.parse("content://com.xoverto.activeaberdeen/sub_activities");
+    public static final Uri CONTENT_URI_OPPORTUNITIES = Uri.parse("content://com.xoverto.activeaberdeen/opportunities");
 
     // Column names
     public static final String KEY_ID = "_id"; // All tables use this field
@@ -71,14 +71,14 @@ public class DataProvider extends ContentProvider {
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI("com.xoverto.matchthecity", "venues", VENUES);
-        uriMatcher.addURI("com.xoverto.matchthecity", "venues/#", VENUE_ID);
-        uriMatcher.addURI("com.xoverto.matchthecity", "activities", ACTIVITIES);
-        uriMatcher.addURI("com.xoverto.matchthecity", "activities/#", ACTIVITY_ID);
-        uriMatcher.addURI("com.xoverto.matchthecity", "sub_activities", SUB_ACTIVITIES);
-        uriMatcher.addURI("com.xoverto.matchthecity", "sub_activities/#", SUB_ACTIVITY_ID);
-        uriMatcher.addURI("com.xoverto.matchthecity", "opportunities", OPPORTUNITIES);
-        uriMatcher.addURI("com.xoverto.matchthecity", "opportunities/#", OPPORTUNITY_ID);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "venues", VENUES);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "venues/#", VENUE_ID);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "activities", ACTIVITIES);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "activities/#", ACTIVITY_ID);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "sub_activities", SUB_ACTIVITIES);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "sub_activities/#", SUB_ACTIVITY_ID);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "opportunities", OPPORTUNITIES);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "opportunities/#", OPPORTUNITY_ID);
     }
 
     DatabaseHelper dbHelper;
@@ -342,14 +342,14 @@ public class DataProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (uriMatcher.match(uri)) {
-            case VENUES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.venues";
-            case VENUE_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.venues";
-            case ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.activities";
-            case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.activities";
-            case SUB_ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.sub_activities";
-            case SUB_ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.sub_activities";
-            case OPPORTUNITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.matchthecity.opportunities";
-            case OPPORTUNITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.matchthecity.opportunities";
+            case VENUES: return "vnd.android.cursor.dir/vnd.com.xoverto.activeaberdeen.venues";
+            case VENUE_ID: return "vnd.android.cursor.item/vnd.com.xoverto.activeaberdeen.venues";
+            case ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.activeaberdeen.activities";
+            case ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.activeaberdeen.activities";
+            case SUB_ACTIVITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.activeaberdeen.sub_activities";
+            case SUB_ACTIVITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.activeaberdeen.sub_activities";
+            case OPPORTUNITIES: return "vnd.android.cursor.dir/vnd.com.xoverto.activeaberdeen.opportunities";
+            case OPPORTUNITY_ID: return "vnd.android.cursor.item/vnd.com.xoverto.activeaberdeen.opportunities";
             default: throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
     }
