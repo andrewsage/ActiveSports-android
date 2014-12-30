@@ -1,9 +1,9 @@
-matchthecity-android
+ActiveSports-android
 ====================
 
 Android app that makes use of the data from the [MatchTheCity](https://github.com/CodeTheCity/matchthecity) project that was created at part of [CodeTheCity Aberdeen 2014](http://codethecity.org)
 
-The purpose of the project is to provide information about various public reoccurring activities in the Aberdeen area.
+The purpose of the project is to provide information about various public reoccurring sports & lesuire activities in the Aberdeen area.
 
 In order to get the app to run correctly you will need to add your own Google Maps API key in a resouces file e.g.
 
