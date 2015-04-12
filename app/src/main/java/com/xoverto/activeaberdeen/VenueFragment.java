@@ -2,6 +2,7 @@ package com.xoverto.activeaberdeen;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -75,10 +76,14 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
 
         // Set the adapter
         mCursorAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1,
+                R.layout.venue_list_item,
                 null,
-                new String[] { DataProvider.KEY_NAME},
-                new int[] { android.R.id.text1}, 0);
+                new String[] {
+                        DataProvider.KEY_NAME,
+                        DataProvider.KEY_ADDRESS
+                },
+                new int[] { R.id.name, R.id.address}, 0);
+
 
 
         mListView = (AbsListView) view.findViewById(android.R.id.list);
@@ -128,8 +133,6 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
 
         LatLng venueLatLng = new LatLng(lat, lng);
 
-
-        Toast.makeText(parent.getContext(), value, Toast.LENGTH_SHORT).show();
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
@@ -173,7 +176,8 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
                 DataProvider.KEY_VENUE_ID,
                 DataProvider.KEY_LOCATION_LAT,
                 DataProvider.KEY_LOCATION_LNG,
-                DataProvider.KEY_UPDATED
+                DataProvider.KEY_UPDATED,
+                DataProvider.KEY_ADDRESS
         };
         CursorLoader loader = new CursorLoader(getActivity(),
                 DataProvider.CONTENT_URI_VENUES,

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="5dp"
-    android:paddingEnd="5dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/name"
@@ -12,40 +9,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Title"
+        android:text="Venue name"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingBottom="5dp"
         style="@style/HeadlineTitle"
         />
 
     <TextView
-        android:id="@+id/venue"
+        android:id="@+id/address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="address"
-        android:drawableLeft="@drawable/icon_location"
-        android:drawablePadding="5dip"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        style="@style/Detail" />
-
-    <TextView
-        android:id="@+id/start_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="start time"
-        android:drawableLeft="@drawable/icon_time"
-        android:drawablePadding="5dip"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingBottom="10dp"
-        style="@style/Detail"  />
+        android:text="address"
+        android:drawableLeft="@drawable/icon_location"
+        android:drawablePadding="5dip"
+        style="@style/Detail"/>
 
 </LinearLayout>

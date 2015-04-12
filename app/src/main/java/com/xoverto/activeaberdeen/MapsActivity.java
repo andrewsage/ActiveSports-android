@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
      */
     private void setUpMap() {
         Intent intent = getIntent();
-        LatLng latLng = intent.getParcelableExtra(MainActivity.EXTRA_VENUE_LOCATION);
+        LatLng latLng = intent.getParcelableExtra(VenuesActivity.EXTRA_VENUE_LOCATION);
 
         mMap.setMyLocationEnabled(true);
 

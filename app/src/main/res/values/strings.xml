@@ -3,6 +3,7 @@
 
     <string name="app_name">Active Aberdeen</string>
     <string name="hello_world">Hello world!</string>
+    <string name="action_home">Home</string>
     <string name="action_settings">Settings</string>
     <string name="action_map">Map</string>
     <string name="action_activities">Activities</string>
@@ -24,6 +25,6 @@
     <string name="title_activity_main">Venues</string>
     <string name="title_activity_opportunity">OpportunityActivity</string>
 
-    <string name="information_warning">Please check with the venue before attending that the activity is still taking place and there are spaces available.</string>
+    <string name="information_warning">Please check with the venue before attending that the activity is still taking place and that there are spaces available.</string>
 
 </resources>

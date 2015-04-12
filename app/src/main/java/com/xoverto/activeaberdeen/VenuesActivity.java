@@ -6,6 +6,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,27 +18,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 
-public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFragment.OnFragmentInteractionListener {
 
-    public final static String EXTRA_OPPORTUNITY_ID = "com.xoverto.activeaberdeen.OPPORTUNITY_ID";
+public class VenuesActivity extends ActionBarActivity implements VenueFragment.OnFragmentInteractionListener {
+
+    public final static String EXTRA_VENUE_LOCATION = "com.xoverto.activeaberdeen.VENUE_LOCATION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_opportunities);
-
 
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 
-        LinearLayout actionBarLayout = (LinearLayout)getLayoutInflater().inflate(R.layout.opportunties_actionbar, null);
-        TextView actionBarTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
-        actionBarTitleView.setText("Activities");
-        TextView actionBarSubTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_subtitleview);
-        actionBarSubTitleView.setText("x Activities");
+        LinearLayout actionBarLayout = (LinearLayout)getLayoutInflater().inflate(R.layout.venues_actionbar, null);
+        //TextView actionBarTitleview = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
+        //actionBarTitleview.setText("My Custom ActionBar Title");
         ActionBar.LayoutParams params = new ActionBar.LayoutParams(
                 ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.MATCH_PARENT,
@@ -57,9 +59,10 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         actionBar.setCustomView(actionBarLayout, params);
         actionBar.setDisplayHomeAsUpEnabled(false);
 
+        setContentView(R.layout.activity_venues);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new OpportunityFragment())
+                    .add(R.id.container, new VenueFragment())
                     .commit();
         }
     }
@@ -68,7 +71,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.opportunities, menu);
+        //getMenuInflater().inflate(R.menu.venues, menu);
         return true;
     }
 
@@ -78,6 +81,32 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(id == R.id.action_home) {
+            finish();
+        }
+
+        if (id == R.id.action_activities) {
+
+            Intent intent = new Intent(this, ActivitiesActivity.class);
+            startActivity(intent);
+
+            return true;
+        }
+        if (id == R.id.action_sub_activities) {
+
+            Intent intent = new Intent(this, SubActivitiesActivity.class);
+            startActivity(intent);
+
+            return true;
+        }
+        if (id == R.id.action_opportunities) {
+
+            Intent intent = new Intent(this, OpportunitiesActivity.class);
+            startActivity(intent);
+
+            return true;
+        }
         if (id == R.id.action_settings) {
             return true;
         }
@@ -85,10 +114,9 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
     }
 
     @Override
-    public void onFragmentInteraction(String value) {
-
-        Intent intent = new Intent(this, OpportunityActivity.class);
-        intent.putExtra(EXTRA_OPPORTUNITY_ID, value);
+    public void onFragmentInteraction(LatLng latLng) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra(EXTRA_VENUE_LOCATION, latLng);
         startActivity(intent);
     }
 }

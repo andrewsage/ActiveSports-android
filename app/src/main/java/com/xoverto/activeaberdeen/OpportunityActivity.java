@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,12 +37,42 @@ import com.squareup.picasso.Picasso;
 public class OpportunityActivity extends ActionBarActivity {
 
     public static FragmentManager fgmanger;
+    private TextView actionBarTitleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opportunity);
 
+        android.app.ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(android.app.ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayOptions(android.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+
+        LinearLayout actionBarLayout = (LinearLayout)getLayoutInflater().inflate(R.layout.venues_actionbar, null);
+        actionBarTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
+
+        android.app.ActionBar.LayoutParams params = new android.app.ActionBar.LayoutParams(
+                android.app.ActionBar.LayoutParams.MATCH_PARENT,
+                android.app.ActionBar.LayoutParams.MATCH_PARENT,
+                Gravity.LEFT);
+
+        ImageView actionBarImageViewBack = (ImageView)actionBarLayout.findViewById(R.id.action_bar_imageview_back);
+
+        actionBarImageViewBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { finish(); }
+        });
+
+        ImageView actionBarImageViewHome = (ImageView)actionBarLayout.findViewById(R.id.action_bar_imageview_home);
+
+        actionBarImageViewHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { finish(); }
+        });
+
+        actionBar.setCustomView(actionBarLayout, params);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
 
 
@@ -67,6 +101,8 @@ public class OpportunityActivity extends ActionBarActivity {
         if(query.getCount() > 0) {
             query.moveToFirst();
             name = query.getString(query.getColumnIndex(DataProvider.KEY_NAME));
+
+            actionBarTitleView.setText(name);
 
             description = query.getString(query.getColumnIndex(DataProvider.KEY_OPPORTUNITY_DESCRIPTION));
 
@@ -112,7 +148,7 @@ public class OpportunityActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_opportunity, menu);
+        //getMenuInflater().inflate(R.menu.menu_opportunity, menu);
         return true;
     }
 

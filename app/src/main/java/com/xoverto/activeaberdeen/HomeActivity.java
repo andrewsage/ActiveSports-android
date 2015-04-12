@@ -1,5 +1,6 @@
 package com.xoverto.activeaberdeen;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,6 +21,9 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();
+
         todayButton = (Button)findViewById(R.id.button_today);
         venuesButton = (Button)findViewById(R.id.button_venues);
 
@@ -34,10 +38,12 @@ public class HomeActivity extends ActionBarActivity {
         venuesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                Intent intent = new Intent(HomeActivity.this, VenuesActivity.class);
                 startActivity(intent);
             }
         });
+
+
     }
 
 

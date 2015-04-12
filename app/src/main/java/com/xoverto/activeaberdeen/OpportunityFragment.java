@@ -69,9 +69,12 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // fragment_venue actually points to fragment_venue_list
         View view = inflater.inflate(R.layout.fragment_venue, container, false);
 
         // Set the adapter
+        // The layout resource is for the actual table cell if this was iOS
         mCursorAdapter = new SimpleCursorAdapter(getActivity(),
                 R.layout.opportunity_list_item,
                 null,

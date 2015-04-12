@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:id="@+id/action_bar_imageview_back"
+        android:src="@drawable/icon_back"
+        android:layout_gravity="center_vertical|left"
+        android:paddingLeft="10dp" />
+
+    <RelativeLayout
+        android:layout_height="match_parent"
+        android:layout_width="0px"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Venues"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/main_brand"
+            android:id="@+id/actionbar_titleview"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:layout_below="@id/actionbar_titleview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Venues"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/main_brand"
+            android:id="@+id/actionbar_subtitleview"
+            android:textStyle="bold"
+            android:textSize="12sp"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:id="@+id/action_bar_imageview_home"
+        android:src="@drawable/icon_home"
+        android:layout_gravity="center_vertical"
+        android:paddingRight="10dp" />
+</LinearLayout>
