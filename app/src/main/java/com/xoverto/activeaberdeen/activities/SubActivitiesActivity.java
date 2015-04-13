@@ -1,19 +1,23 @@
-package com.xoverto.activeaberdeen;
+package com.xoverto.activeaberdeen.activities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class ActivitiesActivity extends ActionBarActivity implements ActivityFragment.OnFragmentInteractionListener {
+import com.xoverto.activeaberdeen.R;
+import com.xoverto.activeaberdeen.ui.SubActivityFragment;
+
+
+public class SubActivitiesActivity extends ActionBarActivity implements SubActivityFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_activities);
+        setContentView(R.layout.activity_sub_activities);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ActivityFragment())
+                    .add(R.id.container, new SubActivityFragment())
                     .commit();
         }
     }
@@ -22,7 +26,7 @@ public class ActivitiesActivity extends ActionBarActivity implements ActivityFra
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activities, menu);
+        getMenuInflater().inflate(R.menu.sub_activities, menu);
         return true;
     }
 

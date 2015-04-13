@@ -16,10 +16,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".VenuesActivity"
+            android:name=".activities.VenuesActivity"
             android:label="@string/title_activity_main"
-            android:parentActivityName=".HomeActivity"
-            >
+            android:parentActivityName=".activities.HomeActivity" >
         </activity>
 
         <service
@@ -41,11 +40,11 @@
         </provider>
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".VenuesActivity" />
+                android:value=".activities.VenuesActivity" />
         </activity>
 
         <meta-data
@@ -56,31 +55,31 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ActivitiesActivity"
+            android:name=".activities.ActivitiesActivity"
             android:label="@string/title_activity_activities"
-            android:parentActivityName=".VenuesActivity" >
+            android:parentActivityName=".activities.VenuesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".VenuesActivity" />
+                android:value=".activities.VenuesActivity" />
         </activity>
         <activity
-            android:name=".SubActivitiesActivity"
+            android:name=".activities.SubActivitiesActivity"
             android:label="@string/title_activity_sub_activities"
-            android:parentActivityName=".VenuesActivity" >
+            android:parentActivityName=".activities.VenuesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".VenuesActivity" />
+                android:value=".activities.VenuesActivity" />
         </activity>
         <activity
-            android:name=".OpportunitiesActivity"
+            android:name=".activities.OpportunitiesActivity"
             android:label="@string/title_activity_opportunities"
-            android:parentActivityName=".VenuesActivity" >
+            android:parentActivityName=".activities.VenuesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".VenuesActivity" />
+                android:value=".activities.VenuesActivity" />
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".activities.HomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -89,12 +88,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OpportunityActivity"
+            android:name=".activities.OpportunityActivity"
             android:label="@string/title_activity_opportunity"
-            android:parentActivityName=".OpportunitiesActivity" >
+            android:parentActivityName=".activities.OpportunitiesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.xoverto.activeaberdeen.OpportunitiesActivity" />
+                android:value=".activities.OpportunitiesActivity" />
+        </activity>
+        <activity
+            android:name=".activities.VenueActivity"
+            android:label="@string/title_activity_venue"
+            android:parentActivityName=".activities.VenuesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.VenuesActivity" />
         </activity>
     </application>
 

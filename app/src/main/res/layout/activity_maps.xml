@@ -43,6 +43,6 @@
     android:layout_height="match_parent"
     android:layout_below="@id/rg_views"
     android:id="@+id/map"
-    tools:context="com.xoverto.activeaberdeen.MapsActivity"
+    tools:context="com.xoverto.activeaberdeen.activities.MapsActivity"
     android:name="com.google.android.gms.maps.SupportMapFragment"/>
 </RelativeLayout>

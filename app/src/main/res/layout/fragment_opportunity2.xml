@@ -8,7 +8,7 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     android:background="@android:color/white"
-    tools:context="com.xoverto.activeaberdeen.OpportunityActivity$PlaceholderFragment">
+    tools:context="com.xoverto.activeaberdeen.activities.OpportunityActivity$PlaceholderFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -144,7 +144,7 @@
                 android:layout_height="200dp"
                 android:layout_below="@id/telephone"
                 android:id="@+id/map"
-                tools:context="com.xoverto.activeaberdeen.MapsActivity"
+                tools:context="com.xoverto.activeaberdeen.activities.MapsActivity"
                 android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
         </LinearLayout>

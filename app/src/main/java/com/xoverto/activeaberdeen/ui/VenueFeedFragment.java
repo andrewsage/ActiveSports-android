@@ -1,8 +1,7 @@
-package com.xoverto.activeaberdeen;
+package com.xoverto.activeaberdeen.ui;
 
 import android.app.Activity;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -17,10 +16,11 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.google.android.gms.maps.model.LatLng;
+import com.xoverto.activeaberdeen.DataProvider;
+import com.xoverto.activeaberdeen.DataUpdateService;
+import com.xoverto.activeaberdeen.R;
 
 /**
  * A fragment representing a list of Items.
@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Activities containing this fragment MUST implement the {Callbacks}
  * interface.
  */
-public class VenueFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class VenueFeedFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = "VENUES";
 
@@ -49,8 +49,8 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
      */
     private ListAdapter mAdapter;
 
-    public static VenueFragment newInstance(String param1, String param2) {
-        VenueFragment fragment = new VenueFragment();
+    public static VenueFeedFragment newInstance(String param1, String param2) {
+        VenueFeedFragment fragment = new VenueFeedFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -60,7 +60,7 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public VenueFragment() {
+    public VenueFeedFragment() {
     }
 
     @Override
@@ -126,17 +126,12 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         Cursor cursor = (Cursor)mCursorAdapter.getItem(position);
-        String value = cursor.getString(cursor
-                .getColumnIndex(DataProvider.KEY_NAME));
-        double lat = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
-        double lng = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
-
-        LatLng venueLatLng = new LatLng(lat, lng);
+        String value = Integer.toString(cursor.getInt(cursor.getColumnIndex(DataProvider.KEY_ID)));
 
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(venueLatLng);
+            mListener.onFragmentInteraction(value);
         }
     }
 
@@ -164,7 +159,7 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
     * >Communicating with Other Fragments</a> for more information.
     */
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(LatLng latLng);
+        public void onFragmentInteraction(String value);
     }
 
 
@@ -198,7 +193,7 @@ public class VenueFragment extends Fragment implements AbsListView.OnItemClickLi
     }
     public void refreshVenues() {
 
-        getLoaderManager().restartLoader(0, null, VenueFragment.this);
+        getLoaderManager().restartLoader(0, null, VenueFeedFragment.this);
         getActivity().startService(new Intent(getActivity(), DataUpdateService.class));
 
     }

@@ -1,4 +1,4 @@
-package com.xoverto.activeaberdeen;
+package com.xoverto.activeaberdeen.ui;
 
 import android.app.Activity;
 import android.app.LoaderManager;
@@ -17,6 +17,10 @@ import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.xoverto.activeaberdeen.DataProvider;
+import com.xoverto.activeaberdeen.DataUpdateService;
+import com.xoverto.activeaberdeen.R;
 
 /**
  * A fragment representing a list of Items.

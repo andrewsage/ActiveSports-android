@@ -1,4 +1,4 @@
-package com.xoverto.activeaberdeen;
+package com.xoverto.activeaberdeen.ui;
 
 import android.app.Activity;
 import android.app.LoaderManager;
@@ -17,7 +17,10 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.xoverto.activeaberdeen.DataProvider;
+import com.xoverto.activeaberdeen.DataUpdateService;
+import com.xoverto.activeaberdeen.R;
 
 /**
  * A fragment representing a list of Items.
@@ -28,7 +31,7 @@ import android.widget.Toast;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class OpportunityFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class OpportunityFeedFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = "OPPORTUNITIES";
 
@@ -46,8 +49,8 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
      */
     private ListAdapter mAdapter;
 
-    public static OpportunityFragment newInstance(String param1, String param2) {
-        OpportunityFragment fragment = new OpportunityFragment();
+    public static OpportunityFeedFragment newInstance(String param1, String param2) {
+        OpportunityFeedFragment fragment = new OpportunityFeedFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -57,7 +60,7 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public OpportunityFragment() {
+    public OpportunityFeedFragment() {
     }
 
     @Override
@@ -237,7 +240,7 @@ public class OpportunityFragment extends Fragment implements AbsListView.OnItemC
     }
     public void refreshVenues() {
 
-        getLoaderManager().restartLoader(0, null, OpportunityFragment.this);
+        getLoaderManager().restartLoader(0, null, OpportunityFeedFragment.this);
         getActivity().startService(new Intent(getActivity(), DataUpdateService.class));
 
     }

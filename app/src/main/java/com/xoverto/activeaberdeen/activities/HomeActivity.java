@@ -1,4 +1,4 @@
-package com.xoverto.activeaberdeen;
+package com.xoverto.activeaberdeen.activities;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+
+import com.xoverto.activeaberdeen.R;
 
 
 public class HomeActivity extends ActionBarActivity {
@@ -19,6 +22,7 @@ public class HomeActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_home);
 
         ActionBar actionBar = getActionBar();

@@ -12,6 +12,12 @@
         <item name="android:textColor">@color/main_text</item>
     </style>
 
+    <style name="WhatsOnTitle">
+        <item name="android:textSize">40sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/main_text</item>
+    </style>
+
     <style name="Detail">
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">normal</item>

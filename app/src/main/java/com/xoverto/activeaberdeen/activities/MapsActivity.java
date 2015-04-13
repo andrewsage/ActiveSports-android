@@ -1,4 +1,4 @@
-package com.xoverto.activeaberdeen;
+package com.xoverto.activeaberdeen.activities;
 
 import android.app.LoaderManager;
 import android.content.Context;
@@ -18,6 +18,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.xoverto.activeaberdeen.DataProvider;
+import com.xoverto.activeaberdeen.R;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -95,6 +97,7 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
      */
     private void setUpMap() {
         Intent intent = getIntent();
+        /*
         LatLng latLng = intent.getParcelableExtra(VenuesActivity.EXTRA_VENUE_LOCATION);
 
         mMap.setMyLocationEnabled(true);
@@ -110,6 +113,7 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
         }
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        */
     }
 
     private void drawMarker(LatLng latLng, String name, String updated){

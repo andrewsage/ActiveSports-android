@@ -118,6 +118,7 @@ public class DataUpdateService extends IntentService {
                 JSONArray venues = new JSONArray(responseStrBuilder.toString());
                 for(int i = 0; i < venues.length(); i++) {
                     JSONObject venue = venues.getJSONObject(i);
+                    JSONObject venueOwnerJSON = venue.getJSONObject("venue_owner");
 
                     String id = venue.getString("id");
                     String name = venue.getString("name");
@@ -128,8 +129,9 @@ public class DataUpdateService extends IntentService {
                     String web = venue.getString("web");
                     String email = venue.getString("email");
                     String telephone = venue.getString("telephone");
+                    String venueOwnerSlug = venueOwnerJSON.getString("slug").replace('-', '_');
 
-                    addNewVenue(id, name, address, postcode, latitude, longitude, web, email, telephone);
+                    addNewVenue(id, name, address, postcode, latitude, longitude, web, email, telephone, venueOwnerSlug);
                 }
             }
         } catch (MalformedURLException e) {
@@ -284,7 +286,8 @@ public class DataUpdateService extends IntentService {
         }
     }
 
-    private void addNewVenue(String id, String name, String address, String postcode, String latitude, String longitude, String web, String email, String telephone) {
+    private void addNewVenue(String id, String name, String address, String postcode, String latitude, String longitude, String web, String email, String telephone,
+                             String venueOwnerSlug) {
         ContentResolver cr = getContentResolver();
 
         // Construct a where clause to make sure we don't already have this venue in the provider
@@ -301,6 +304,7 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_NAME, name);
             values.put(DataProvider.KEY_ADDRESS, address);
             values.put(DataProvider.KEY_TELEPHONE, telephone);
+            values.put(DataProvider.KEY_VENUE_OWNER_SLUG, venueOwnerSlug);
 
             Double latPosition = 0.0;
             Double longPosition = 0.0;
@@ -326,6 +330,7 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_NAME, name);
             values.put(DataProvider.KEY_ADDRESS, address);
             values.put(DataProvider.KEY_TELEPHONE, telephone);
+            values.put(DataProvider.KEY_VENUE_OWNER_SLUG, venueOwnerSlug);
 
             Double latPosition = 0.0;
             Double longPosition = 0.0;
@@ -343,7 +348,8 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_LOCATION_LNG, longPosition);
             values.put(DataProvider.KEY_UPDATED, java.lang.System.currentTimeMillis());
 
-            cr.update(DataProvider.CONTENT_URI_VENUES, values, w, null);
+            int rowsUpdated = cr.update(DataProvider.CONTENT_URI_VENUES, values, w, selectionArgs);
+            Log.d(TAG, "Rows updated: " + rowsUpdated);
         }
         query.close();
     }

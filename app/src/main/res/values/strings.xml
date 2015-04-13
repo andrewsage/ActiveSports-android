@@ -24,7 +24,7 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_main">Venues</string>
     <string name="title_activity_opportunity">OpportunityActivity</string>
-
     <string name="information_warning">Please check with the venue before attending that the activity is still taking place and that there are spaces available.</string>
+    <string name="title_activity_venue">VenueActivity</string>
 
 </resources>

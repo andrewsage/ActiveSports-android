@@ -34,6 +34,7 @@ public class DataProvider extends ContentProvider {
     public static final String KEY_WEB = "web";
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_POSTCODE = "postcode";
+    public static final String KEY_VENUE_OWNER_SLUG = "venue_owner_slug";
 
     public static final String KEY_ACTIVITY_ID = "activity_id";
     public static final String KEY_ACTIVITY_TITLE = "title";
@@ -359,7 +360,7 @@ public class DataProvider extends ContentProvider {
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "VenueProvider";
         private static final String DATABASE_NAME = "venues.db";
-        private static final int DATABASE_VERSION = 4;
+        private static final int DATABASE_VERSION = 5;
         private static final String VENUE_TABLE = "venues";
         private static final String ACTIVITY_TABLE = "activities";
         private static final String SUB_ACTIVITY_TABLE = "sub_activities";
@@ -375,7 +376,8 @@ public class DataProvider extends ContentProvider {
                 + KEY_ADDRESS + " TEXT, "
                 + KEY_POSTCODE + " TEXT, "
                 + KEY_WEB + " TEXT,"
-                + KEY_EMAIL + " TEXT);";
+                + KEY_EMAIL + " TEXT,"
+                + KEY_VENUE_OWNER_SLUG + " TEXT);";
 
         private static final String DATABASE_CREATE_ACTIVITY =  "create table " + ACTIVITY_TABLE + " ("
                 + KEY_ID + " integer primary key autoincrement, "

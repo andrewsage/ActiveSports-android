@@ -43,6 +43,7 @@
         android:drawableTop="@drawable/home_advanced_search"
         style="@style/HomeScreenButton"
         android:enabled="false"
+        android:alpha="0.5"
         android:layout_row="1"
         android:layout_column="1" />
 
@@ -53,6 +54,7 @@
         android:drawableTop="@drawable/home_saved_searches"
         style="@style/HomeScreenButton"
         android:enabled="false"
+        android:alpha="0.5"
         android:layout_row="2"
         android:layout_column="0" />
 
@@ -63,6 +65,7 @@
         android:drawableTop="@drawable/home_fave_activites"
         style="@style/HomeScreenButton"
         android:enabled="false"
+        android:alpha="0.5"
         android:layout_row="2"
         android:layout_column="1" />
 
@@ -73,6 +76,7 @@
         android:drawableTop="@drawable/home_likes_dislikes"
         style="@style/HomeScreenButton"
         android:enabled="false"
+        android:alpha="0.5"
         android:layout_row="3"
         android:layout_column="0" />
 
@@ -92,6 +96,7 @@
         android:drawableTop="@drawable/home_about"
         style="@style/HomeScreenButton"
         android:enabled="false"
+        android:alpha="0.5"
         android:layout_row="4"
         android:layout_column="0" />
 
