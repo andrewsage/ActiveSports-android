@@ -34,7 +34,7 @@ public class HomeActivity extends ActionBarActivity {
         todayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, OpportunitiesActivity.class);
+                Intent intent = new Intent(HomeActivity.this, TodayActivity.class);
                 startActivity(intent);
             }
         });

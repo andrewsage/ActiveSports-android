@@ -103,6 +103,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.VenuesActivity" />
         </activity>
+        <activity
+            android:name=".activities.TodayActivity"
+            android:label="@string/title_activity_today"
+            android:parentActivityName=".activities.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.xoverto.activeaberdeen.activities.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>

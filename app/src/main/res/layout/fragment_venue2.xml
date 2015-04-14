@@ -21,19 +21,17 @@
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_below="@+id/warning_line"
-                android:layout_centerHorizontal="true"
                 android:background="@android:color/transparent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/aberdeen_sports_village" />
+                android:src="@drawable/aberdeen_sports_village"
+                android:contentDescription="@string/venue_owner_logo_description" />
 
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView"
                 android:text="Title"
                 android:padding="10dp"
                 style="@style/HeadlineTitle"
@@ -43,21 +41,19 @@
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/name"
                 android:drawableLeft="@drawable/icon_location_black"
                 android:drawablePadding="5dip"
                 android:text="Address"
                 style="@style/Detail"
                 android:paddingLeft="10dp"
-                android:paddingTop="10dp"
                 android:paddingRight="10dp"
-                android:paddingBottom="5dp" />
+                android:paddingBottom="5dp"
+                android:paddingTop="0dp" />
 
             <TextView
                 android:id="@+id/telephone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/address"
                 android:drawableLeft="@drawable/icon_phone"
                 android:drawablePadding="5dip"
                 android:text="Telephone"
@@ -71,7 +67,6 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_below="@id/telephone"
                 android:id="@+id/map"
                 tools:context="com.xoverto.activeaberdeen.activities.MapsActivity"
                 android:name="com.google.android.gms.maps.SupportMapFragment"/>
@@ -80,11 +75,17 @@
                 android:id="@+id/whats_on_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView"
-                android:text="What's on today"
+                android:text="@string/whats_on_today"
                 android:gravity="center"
                 android:padding="10dp"
                 style="@style/WhatsOnTitle"
+                />
+
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/list"
+                android:name="com.xoverto.activeaberdeen.ui.OpportunityFeedFragment"
                 />
 
         </LinearLayout>

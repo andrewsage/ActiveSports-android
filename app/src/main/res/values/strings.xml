@@ -26,5 +26,8 @@
     <string name="title_activity_opportunity">OpportunityActivity</string>
     <string name="information_warning">Please check with the venue before attending that the activity is still taking place and that there are spaces available.</string>
     <string name="title_activity_venue">VenueActivity</string>
+    <string name="whats_on_today">What\'s on today</string>
+    <string name="venue_owner_logo_description">Logo of the venue\'s owner.</string>
+    <string name="title_activity_today">TodayActivity</string>
 
 </resources>

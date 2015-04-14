@@ -3,4 +3,5 @@
     <color name="main_text">#000000</color>
     <color name="main_brand">#2905a0</color>
     <color name="light_grey">#cccccc</color>
+    <color name="positive_action">#097d75</color>
 </resources>

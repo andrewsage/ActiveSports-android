@@ -34,6 +34,8 @@ import com.xoverto.activeaberdeen.R;
 public class OpportunityFeedFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = "OPPORTUNITIES";
+    public static final String DAY = "day";
+
 
     private OnFragmentInteractionListener mListener;
     private SimpleCursorAdapter mCursorAdapter;
@@ -49,9 +51,11 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
      */
     private ListAdapter mAdapter;
 
-    public static OpportunityFeedFragment newInstance(String param1, String param2) {
+    public static OpportunityFeedFragment newInstance(String day) {
         OpportunityFeedFragment fragment = new OpportunityFeedFragment();
         Bundle args = new Bundle();
+        args.putString(DAY, day);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -210,6 +214,14 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        String day = getArguments().getString(DAY);
+
+        // Construct a where clause to filter the opportunities
+        String w = DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "=?";
+
+        String[] selectionArgs = { day };
+
         String[] projection = {
                 DataProvider.KEY_ID,
                 DataProvider.KEY_OPPORTUNITY_NAME,
@@ -223,7 +235,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         };
         CursorLoader loader = new CursorLoader(getActivity(),
                 DataProvider.CONTENT_URI_OPPORTUNITIES,
-                projection, null, null, null);
+                projection, w, selectionArgs, null);
 
         return loader;
     }

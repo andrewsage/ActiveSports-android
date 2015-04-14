@@ -17,6 +17,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.R;
@@ -155,6 +157,7 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
 
         mMap.clear();
 
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
         for(int i = 0; i < locationCount; i++) {
             lat = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
@@ -163,6 +166,8 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
             updated = cursor.getLong(cursor.getColumnIndex(DataProvider.KEY_UPDATED));
 
             LatLng location = new LatLng(lat, lng);
+            builder.include(location);
+
 
             DateFormat dateF = DateFormat.getDateTimeInstance();
             String text = "Last Updated: " + dateF.format(new Date(updated));
@@ -172,6 +177,8 @@ public class MapsActivity extends FragmentActivity implements LoaderManager.Load
             cursor.moveToNext();
         }
 
+        LatLngBounds bounds = builder.build();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
     }
 
     @Override

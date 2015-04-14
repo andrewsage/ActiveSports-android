@@ -1,12 +1,15 @@
 package com.xoverto.activeaberdeen.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +24,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.xoverto.activeaberdeen.R;
+import com.xoverto.activeaberdeen.activities.OpportunitiesActivity;
+import com.xoverto.activeaberdeen.activities.OpportunityActivity;
 
 /**
  * Created by andrew on 13/04/15.
  */
-public class VenueFragment extends Fragment {
+public class VenueFragment extends Fragment  {
 
     public static final String VENUE_ID_KEY = "venueId";
     public static final String VENUE_NAME = "name";
@@ -108,6 +113,9 @@ public class VenueFragment extends Fragment {
         } else {
             logoImage.setVisibility(View.GONE);
         }
+
+
+
     }
 
     /**
@@ -177,4 +185,5 @@ public class VenueFragment extends Fragment {
                 .snippet(updated)
                 .title(name));
     }
+
 }
