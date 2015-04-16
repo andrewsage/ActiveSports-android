@@ -36,7 +36,8 @@ import java.util.ArrayList;
 public class OpportunityFeedFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = "OPPORTUNITIES";
-    public static final String DAY = "day";
+    public static final String SEARCH_NAME ="name";
+    public static final String SEARCH_DAY = "day";
     public static final String VENUE_ID = "venueId";
 
 
@@ -54,10 +55,11 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
      */
     private ListAdapter mAdapter;
 
-    public static OpportunityFeedFragment newInstance(String day) {
+    public static OpportunityFeedFragment newInstance(String name, String day) {
         OpportunityFeedFragment fragment = new OpportunityFeedFragment();
         Bundle args = new Bundle();
-        args.putString(DAY, day);
+        args.putString(SEARCH_NAME, name);
+        args.putString(SEARCH_DAY, day);
 
         fragment.setArguments(args);
         return fragment;
@@ -217,12 +219,22 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String day = getArguments().getString(DAY);
+        String name = getArguments().getString(SEARCH_NAME);
+        String day = getArguments().getString(SEARCH_DAY);
         String venueId = getArguments().getString(VENUE_ID);
+
 
         // Construct a where clause to filter the opportunities
         String w = "";
         ArrayList<String> selectionArgs = new ArrayList<String>();
+
+        if(name != null) {
+            if(name.isEmpty() == false) {
+                w = w + "(" + DataProvider.KEY_OPPORTUNITY_NAME + " like ? OR " + DataProvider.KEY_OPPORTUNITY_DESCRIPTION + " like ? )";
+                selectionArgs.add("%" + name + "%");
+                selectionArgs.add("%" + name + "%");
+            }
+        }
 
         if(day != null) {
             w = w + DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "=?";
@@ -233,6 +245,8 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
             w = w + DataProvider.KEY_OPPORTUNITY_VENUE_ID + "=?";
             selectionArgs.add(venueId);
         }
+
+
 
         String[] selectionArgsArray = new String[selectionArgs.size()];
         selectionArgsArray = selectionArgs.toArray(selectionArgsArray);

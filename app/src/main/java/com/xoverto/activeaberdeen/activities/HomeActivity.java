@@ -17,6 +17,7 @@ public class HomeActivity extends ActionBarActivity {
 
     Button todayButton;
     Button venuesButton;
+    Button searchButton;
 
 
     @Override
@@ -30,6 +31,7 @@ public class HomeActivity extends ActionBarActivity {
 
         todayButton = (Button)findViewById(R.id.button_today);
         venuesButton = (Button)findViewById(R.id.button_venues);
+        searchButton = (Button)findViewById(R.id.button_search);
 
         todayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +48,15 @@ public class HomeActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
 
     }

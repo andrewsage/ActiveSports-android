@@ -1,6 +1,5 @@
 package com.xoverto.activeaberdeen.ui;
 
-import android.app.LoaderManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.R;
 import com.xoverto.activeaberdeen.activities.OpportunitiesActivity;
-import com.xoverto.activeaberdeen.activities.TodayActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -58,7 +56,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 String todayName = sdf.format(c.getTime());
 
                 Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
-                intent.putExtra(OpportunitiesActivity.EXTRA_DAY, todayName);
+                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);
                 startActivity(intent);
             }
         });

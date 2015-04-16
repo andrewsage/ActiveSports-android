@@ -37,13 +37,11 @@
         android:paddingBottom="0dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_search"
         android:text="Advanced Search"
         android:layout_gravity="fill"
         android:drawableTop="@drawable/home_advanced_search"
         style="@style/HomeScreenButton"
-        android:enabled="false"
-        android:alpha="0.5"
         android:layout_row="1"
         android:layout_column="1" />
 

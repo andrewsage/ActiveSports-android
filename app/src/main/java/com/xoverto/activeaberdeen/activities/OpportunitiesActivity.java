@@ -21,7 +21,8 @@ import com.xoverto.activeaberdeen.ui.OpportunityFeedFragment;
 public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFeedFragment.OnFragmentInteractionListener {
 
     public final static String EXTRA_OPPORTUNITY_ID = "com.xoverto.activeaberdeen.OPPORTUNITY_ID";
-    public final static String EXTRA_DAY = "DAY";
+    public final static String EXTRA_SEARCH_DAY = "SEARCH_DAY";
+    public final static String EXTRA_SEARCH_NAME ="NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +66,19 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         actionBar.setDisplayHomeAsUpEnabled(false);
 
         String day = null;
+        String name = null;
 
         if(getIntent() != null)
         {
-            day = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_DAY);
+            name = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_NAME);
+            day = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY);
         }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, OpportunityFeedFragment.newInstance(day))
+                    .add(R.id.container, OpportunityFeedFragment.newInstance(name, day))
                     .commit();
         }
-
-
     }
 
 
