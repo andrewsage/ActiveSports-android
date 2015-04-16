@@ -12,13 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.xoverto.activeaberdeen.R;
+
+import java.util.Calendar;
 
 public class SearchActivity extends ActionBarActivity {
 
@@ -99,8 +103,12 @@ public class SearchActivity extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        private Button mTodayButton;
+        private Button mTomorrowButton;
         private Button mSearchButton;
         private EditText mNameEditText;
+        private String[] days;
+        private Spinner mDaysSpinner;
 
 
         public PlaceholderFragment() {
@@ -112,8 +120,37 @@ public class SearchActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
 
+            days = getResources().getStringArray(R.array.days_list);
+            mTodayButton = (Button) rootView.findViewById(R.id.today_button);
+            mTomorrowButton = (Button) rootView.findViewById(R.id.tomorrow_button);
             mSearchButton = (Button) rootView.findViewById(R.id.button_search);
             mNameEditText = (EditText) rootView.findViewById(R.id.name_editText);
+            mDaysSpinner = (Spinner) rootView.findViewById(R.id.day_spinner);
+
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_spinner_item, days);
+
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mDaysSpinner.setAdapter(dataAdapter);
+
+            mTodayButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Calendar calendar = Calendar.getInstance();
+                    int day = calendar.get(Calendar.DAY_OF_WEEK);
+                    mDaysSpinner.setSelection(day - 1, true);
+
+                }
+            });
+
+            mTomorrowButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Calendar calendar = Calendar.getInstance();
+                    int day = (calendar.get(Calendar.DAY_OF_WEEK) + 1) % 7;
+                    mDaysSpinner.setSelection(day - 1, true);
+                }
+            });
 
             mSearchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,6 +158,9 @@ public class SearchActivity extends ActionBarActivity {
 
                     Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
                     intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_NAME, mNameEditText.getText().toString());
+                    if(mDaysSpinner.getSelectedItemPosition() < 7) {
+                        intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, days[mDaysSpinner.getSelectedItemPosition()]);
+                    }
                     startActivity(intent);
                 }
             });

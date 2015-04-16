@@ -30,5 +30,18 @@
     <string name="venue_owner_logo_description">Logo of the venue\'s owner.</string>
     <string name="title_activity_today">TodayActivity</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="search_button_text">SEARCH</string>
+
+    <string name="day_of_week_label">Day of the week</string>
+    <string-array name="days_list">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Any</item>
+    </string-array>
 
 </resources>
