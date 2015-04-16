@@ -73,7 +73,7 @@ public class VenueActivity extends FragmentActivity implements OpportunityFeedFr
         actionBar.setCustomView(actionBarLayout, params);
         actionBar.setDisplayHomeAsUpEnabled(false);
 
-        String venueId = null;
+        String venueId = null; // This is the local database ID
 
         if(getIntent() != null)
         {
@@ -82,34 +82,29 @@ public class VenueActivity extends FragmentActivity implements OpportunityFeedFr
 
         ContentResolver cr = getContentResolver();
 
-        String w = DataProvider.KEY_ID + " = '" + venueId + "'";
-        String label = "unknown activity";
         String venueName = "";
-        String photoUri = "";
-        String time = "";
-        String venue = "";
         String venueOwnerSlug = "";
         String address = "";
         String telephone = "";
         LatLng venueLatLng = null;
+        String venueRemoteID = null;   // this is the ID that anything that references it will use,
 
+        String wVenue = DataProvider.KEY_ID + " = '" + venueId + "'";
+        Cursor queryVenue = cr.query(DataProvider.CONTENT_URI_VENUES, null, wVenue, null, null);
 
-            String wVenue = DataProvider.KEY_ID + " = '" + venueId + "'";
-            Cursor queryVenue = cr.query(DataProvider.CONTENT_URI_VENUES, null, wVenue, null, null);
+        if (queryVenue.getCount() > 0) {
+            queryVenue.moveToFirst();
+            venueRemoteID = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_VENUE_ID));
+            venueName = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_NAME));
+            telephone = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_TELEPHONE));
+            address = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_ADDRESS));
+            venueOwnerSlug = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_VENUE_OWNER_SLUG));
+            double lat = queryVenue.getDouble(queryVenue.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
+            double lng = queryVenue.getDouble(queryVenue.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
 
-            if(queryVenue.getCount() > 0) {
-                queryVenue.moveToFirst();
-                venueName = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_NAME));
-                telephone = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_TELEPHONE));
-                address = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_ADDRESS));
-                venueOwnerSlug = queryVenue.getString(queryVenue.getColumnIndex(DataProvider.KEY_VENUE_OWNER_SLUG));
-                double lat = queryVenue.getDouble(queryVenue.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
-                double lng = queryVenue.getDouble(queryVenue.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
-
-                venueLatLng = new LatLng(lat, lng);
-
-            }
-            queryVenue.close();
+            venueLatLng = new LatLng(lat, lng);
+        }
+        queryVenue.close();
 
         actionBarTitleView.setText(venueName);
 
@@ -118,7 +113,7 @@ public class VenueActivity extends FragmentActivity implements OpportunityFeedFr
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, VenueFragment.newInstance(venueName, address, telephone, venueLatLng, venueOwnerSlug))
+                    .add(R.id.container, VenueFragment.newInstance(venueRemoteID, venueName, address, telephone, venueLatLng, venueOwnerSlug))
                     .commit();
         }
 

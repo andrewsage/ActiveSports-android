@@ -54,12 +54,13 @@ public class VenueFragment extends Fragment  {
     public VenueFragment() {
     }
 
-    public static Fragment newInstance(String name, String address, String telephone, LatLng venueLatLng, String venueOwnerSlug)
+    public static Fragment newInstance(String venueId, String name, String address, String telephone, LatLng venueLatLng, String venueOwnerSlug)
     {
         Fragment myFragment = new VenueFragment();
 
         Bundle args = new Bundle();
 
+        args.putString(VENUE_ID_KEY, venueId);
         args.putString(VENUE_NAME, name);
         args.putString(VENUE_ADDRESS, address);
         args.putString(VENUE_TELEPHONE, telephone);
@@ -75,6 +76,16 @@ public class VenueFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        // Add the Opportunities fragment
+        FragmentManager childFragMan = getChildFragmentManager();
+        FragmentTransaction childFragTran = childFragMan.beginTransaction();
+        OpportunityFeedFragment fragOpportunities = new OpportunityFeedFragment();
+        fragOpportunities.setArguments(getArguments());
+        childFragTran.add(R.id.fragement_opportunities, fragOpportunities);
+        childFragTran.commit();
+
         View rootView = inflater.inflate(R.layout.fragment_venue2, container, false);
 
         nameText = (TextView)rootView.findViewById(R.id.name);

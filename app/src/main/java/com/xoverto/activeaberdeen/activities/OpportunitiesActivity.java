@@ -72,7 +72,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         }
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, OpportunityFeedFragment.newInstance(day))
                     .commit();
         }

@@ -1,14 +1,14 @@
 package com.xoverto.activeaberdeen.ui;
 
 import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.ContentResolver;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.DataUpdateService;
 import com.xoverto.activeaberdeen.R;
+
+import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
@@ -35,6 +37,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
     public static final String TAG = "OPPORTUNITIES";
     public static final String DAY = "day";
+    public static final String VENUE_ID = "venueId";
 
 
     private OnFragmentInteractionListener mListener;
@@ -70,7 +73,6 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -216,11 +218,24 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         String day = getArguments().getString(DAY);
+        String venueId = getArguments().getString(VENUE_ID);
 
         // Construct a where clause to filter the opportunities
-        String w = DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "=?";
+        String w = "";
+        ArrayList<String> selectionArgs = new ArrayList<String>();
 
-        String[] selectionArgs = { day };
+        if(day != null) {
+            w = w + DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "=?";
+            selectionArgs.add(day);
+        }
+
+        if(venueId != null) {
+            w = w + DataProvider.KEY_OPPORTUNITY_VENUE_ID + "=?";
+            selectionArgs.add(venueId);
+        }
+
+        String[] selectionArgsArray = new String[selectionArgs.size()];
+        selectionArgsArray = selectionArgs.toArray(selectionArgsArray);
 
         String[] projection = {
                 DataProvider.KEY_ID,
@@ -235,7 +250,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         };
         CursorLoader loader = new CursorLoader(getActivity(),
                 DataProvider.CONTENT_URI_OPPORTUNITIES,
-                projection, w, selectionArgs, null);
+                projection, w, selectionArgsArray, null);
 
         return loader;
     }
