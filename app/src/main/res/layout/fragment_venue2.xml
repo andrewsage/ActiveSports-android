@@ -10,7 +10,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:id="@+id/scrollView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,20 +72,29 @@
                 tools:context="com.xoverto.activeaberdeen.activities.MapsActivity"
                 android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-            <TextView
-                android:id="@+id/whats_on_header"
-                android:layout_width="wrap_content"
+            <Button
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/whats_on_today"
-                android:gravity="center"
-                android:padding="10dp"
-                style="@style/WhatsOnTitle"
-                />
+                android:text="What&apos;s on today?"
+                android:id="@+id/button_today"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/scrollView"
+                android:layout_alignEnd="@+id/scrollView"
+                android:background="@drawable/layout_rounded_positive_button_bg"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="10dp" />
 
-            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/fragement_opportunities"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="All Activities"
+                android:id="@+id/button_all"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/scrollView"
+                android:layout_alignEnd="@+id/scrollView"
+                android:background="@drawable/layout_rounded_positive_button_bg"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="10dp" />
 
         </LinearLayout>
     </ScrollView>

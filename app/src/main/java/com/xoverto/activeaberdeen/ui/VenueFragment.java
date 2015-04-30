@@ -7,13 +7,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +23,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.xoverto.activeaberdeen.R;
 import com.xoverto.activeaberdeen.activities.OpportunitiesActivity;
-import com.xoverto.activeaberdeen.activities.OpportunityActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Created by andrew on 13/04/15.
@@ -50,6 +50,9 @@ public class VenueFragment extends Fragment  {
     private TextView addressText;
     private TextView telephoneText;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private Button mTodayButton;
+    private Button mAllButton;
+
 
     public VenueFragment() {
     }
@@ -78,12 +81,14 @@ public class VenueFragment extends Fragment  {
                              Bundle savedInstanceState) {
 
 
+        /*
         // Add the Opportunities fragment
         FragmentManager childFragMan = getChildFragmentManager();
         FragmentTransaction childFragTran = childFragMan.beginTransaction();
         OpportunityFeedFragment fragOpportunities = OpportunityFeedFragment.newInstance(null, null, getArguments().getString(VENUE_ID_KEY));
         childFragTran.add(R.id.fragement_opportunities, fragOpportunities);
         childFragTran.commit();
+        */
 
         View rootView = inflater.inflate(R.layout.fragment_venue2, container, false);
 
@@ -91,6 +96,33 @@ public class VenueFragment extends Fragment  {
         addressText = (TextView)rootView.findViewById(R.id.address);
         telephoneText = (TextView)rootView.findViewById(R.id.telephone);
         logoImage = (ImageView)rootView.findViewById(R.id.imageView);
+        mTodayButton = (Button) rootView.findViewById(R.id.button_today);
+        mAllButton = (Button) rootView.findViewById(R.id.button_all);
+
+
+        mTodayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+                String todayName = sdf.format(c.getTime());
+
+                Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE, getArguments().getString(VENUE_ID_KEY));
+                startActivity(intent);
+            }
+        });
+
+        mAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE, getArguments().getString(VENUE_ID_KEY));
+                startActivity(intent);
+            }
+        });
 
         setUpMapIfNeeded();
 
