@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -265,6 +266,22 @@ public class DataUpdateService extends IntentService {
                     String end_time = venue.getString("end_time");
                     String day_of_week = venue.getString("day_of_week");
                     String image_html = venue.getString("image_url");
+                    JSONArray tagsJSONArray = venue.getJSONArray("tag_list");
+
+                    ArrayList<String> tagsArray = new ArrayList<String>();
+                    for(int t = 0, count = tagsJSONArray.length(); t < count; t++)
+                    {
+                        try {
+                            String tag = tagsJSONArray.getString(t);
+                            tagsArray.add(tag);
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    String tags = tagsArray.toString();
+                    tags = tags.substring(1, tags.length()-1);
 
                     String image_url = "";
                     Pattern pattern = Pattern.compile("<img[^>]+src=\"([^\">]+)\"");
@@ -273,7 +290,9 @@ public class DataUpdateService extends IntentService {
                         image_url = matcher.group(1);
                     }
 
-                    addNewOpportunity(id, name, description, activity_id, sub_activity_id, venue_id, room, start_time, end_time, day_of_week, image_url);
+                    addNewOpportunity(id, name, description, activity_id, sub_activity_id,
+                            venue_id, room, start_time, end_time, day_of_week, image_url,
+                            tags);
                 }
             }
         } catch (MalformedURLException e) {
@@ -404,7 +423,11 @@ public class DataUpdateService extends IntentService {
         query.close();
     }
 
-    private void addNewOpportunity(String id, String name, String description, String activity_id, String sub_activity_id, String venue_id, String room, String start_time, String end_time, String day_of_week, String image_url) {
+    private void addNewOpportunity(String id, String name, String description, String activity_id,
+                                   String sub_activity_id, String venue_id, String room,
+                                   String start_time, String end_time, String day_of_week,
+                                   String image_url,
+                                   String tags) {
         ContentResolver cr = getContentResolver();
 
         // Construct a where clause to make sure we don't already have this venue in the provider
@@ -425,6 +448,7 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_OPPORTUNITY_END_TIME, end_time);
             values.put(DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK, day_of_week);
             values.put(DataProvider.KEY_OPPORTUNITY_IMAGE_URL, image_url);
+            values.put(DataProvider.KEY_OPPORTUNITY_TAGS, tags);
 
             cr.insert(DataProvider.CONTENT_URI_OPPORTUNITIES, values);
         } else {
@@ -439,6 +463,7 @@ public class DataUpdateService extends IntentService {
             values.put(DataProvider.KEY_OPPORTUNITY_END_TIME, end_time);
             values.put(DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK, day_of_week);
             values.put(DataProvider.KEY_OPPORTUNITY_IMAGE_URL, image_url);
+            values.put(DataProvider.KEY_OPPORTUNITY_TAGS, tags);
 
             cr.update(DataProvider.CONTENT_URI_OPPORTUNITIES, values, w, null);
         }

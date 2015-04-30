@@ -55,6 +55,7 @@ public class DataProvider extends ContentProvider {
     public static final String KEY_OPPORTUNITY_END_TIME = "end_time";
     public static final String KEY_OPPORTUNITY_DAY_OF_WEEK = "day_of_week";
     public static final String KEY_OPPORTUNITY_IMAGE_URL = "image_url";
+    public static final String KEY_OPPORTUNITY_TAGS = "tags";
 
     // Create the constants used to differentiate between the different URI requests
     private static final int VENUES = 1;
@@ -360,7 +361,7 @@ public class DataProvider extends ContentProvider {
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG = "VenueProvider";
         private static final String DATABASE_NAME = "venues.db";
-        private static final int DATABASE_VERSION = 5;
+        private static final int DATABASE_VERSION = 6;
         private static final String VENUE_TABLE = "venues";
         private static final String ACTIVITY_TABLE = "activities";
         private static final String SUB_ACTIVITY_TABLE = "sub_activities";
@@ -403,7 +404,8 @@ public class DataProvider extends ContentProvider {
                 + KEY_OPPORTUNITY_START_TIME + " TEXT, "
                 + KEY_OPPORTUNITY_END_TIME + " TEXT, "
                 + KEY_OPPORTUNITY_DAY_OF_WEEK + " TEXT, "
-                + KEY_OPPORTUNITY_IMAGE_URL + " TEXT);";
+                + KEY_OPPORTUNITY_IMAGE_URL + " TEXT, "
+                + KEY_OPPORTUNITY_TAGS + " TEXT);";
 
 
         // The underlying database

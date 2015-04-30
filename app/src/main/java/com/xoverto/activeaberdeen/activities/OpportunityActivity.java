@@ -101,6 +101,7 @@ public class OpportunityActivity extends ActionBarActivity {
         String address = "";
         String telephone = "";
         LatLng venueLatLng = null;
+        String tags = "";
 
         Cursor query = cr.query(DataProvider.CONTENT_URI_OPPORTUNITIES, null, w, null, null);
 
@@ -109,6 +110,8 @@ public class OpportunityActivity extends ActionBarActivity {
             name = query.getString(query.getColumnIndex(DataProvider.KEY_NAME));
 
             actionBarTitleView.setText(name);
+
+            tags = query.getString(query.getColumnIndex(DataProvider.KEY_OPPORTUNITY_TAGS));
 
             description = query.getString(query.getColumnIndex(DataProvider.KEY_OPPORTUNITY_DESCRIPTION));
 
@@ -145,7 +148,8 @@ public class OpportunityActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, OpportunityFragment.newInstance(name, venue, time, photoUri, description, address, telephone, venueLatLng))
+                    .add(R.id.container, OpportunityFragment.newInstance(name, venue, time,
+                            photoUri, description, address, telephone, venueLatLng, tags))
                     .commit();
         }
     }

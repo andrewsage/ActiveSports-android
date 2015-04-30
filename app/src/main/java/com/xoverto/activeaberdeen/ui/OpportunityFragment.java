@@ -34,6 +34,7 @@ public class OpportunityFragment extends Fragment {
     public static final String OPPORTUNITY_TELEPHONE = "telephone";
     public static final String OPPORTUNITY_LAT = "lat";
     public static final String OPPORTUNITY_LONG = "long";
+    public static final String OPPORTUNITY_TAGS = "tags";
 
     public static FragmentManager fgmanger;
 
@@ -45,12 +46,13 @@ public class OpportunityFragment extends Fragment {
     private TextView addressText;
     private TextView telephoneText;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private TextView mTagsText;
 
     public OpportunityFragment() {
     }
 
     public static Fragment newInstance(String name, String venue, String time, String photoUri, String description,
-                                       String address, String telephone, LatLng venueLatLng)
+                                       String address, String telephone, LatLng venueLatLng, String tags)
     {
         Fragment myFragment = new OpportunityFragment();
 
@@ -65,6 +67,7 @@ public class OpportunityFragment extends Fragment {
         args.putString(OPPORTUNITY_TELEPHONE, telephone);
         args.putDouble(OPPORTUNITY_LAT, venueLatLng.latitude);
         args.putDouble(OPPORTUNITY_LONG, venueLatLng.longitude);
+        args.putString(OPPORTUNITY_TAGS, tags);
 
         myFragment.setArguments(args);
 
@@ -83,6 +86,7 @@ public class OpportunityFragment extends Fragment {
         descriptionText = (TextView)rootView.findViewById(R.id.description);
         addressText = (TextView)rootView.findViewById(R.id.address);
         telephoneText = (TextView)rootView.findViewById(R.id.telephone);
+        mTagsText = (TextView)rootView.findViewById(R.id.tags);
 
         setUpMapIfNeeded();
 
@@ -100,6 +104,7 @@ public class OpportunityFragment extends Fragment {
         String description = getArguments().getString(OPPORTUNITY_DESCRIPTION);
         String address = getArguments().getString(OPPORTUNITY_ADDRESS);
         String telephone = getArguments().getString(OPPORTUNITY_TELEPHONE);
+        String tags = getArguments().getString(OPPORTUNITY_TAGS);
 
 
 
@@ -109,6 +114,7 @@ public class OpportunityFragment extends Fragment {
         descriptionText.setText(Html.fromHtml(description));
         addressText.setText(address);
         telephoneText.setText(telephone);
+        mTagsText.setText(tags);
 
         if(photoUri.isEmpty() == false) {
             Picasso.with(getActivity())
