@@ -11,6 +11,8 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.xoverto.activeaberdeen.R;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 
 public class HomeActivity extends ActionBarActivity {
@@ -23,6 +25,7 @@ public class HomeActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_home);
 
