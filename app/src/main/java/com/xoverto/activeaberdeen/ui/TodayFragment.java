@@ -61,10 +61,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
             }
         });
 
-        setUpMapIfNeeded();
         getLoaderManager().initLoader(0, null, this);
-
-
 
         return rootView;
     }
@@ -169,6 +166,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         locationCount = cursor.getCount();
         cursor.moveToFirst();
 
+        setUpMapIfNeeded();
         mMap.clear();
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -196,6 +194,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         }
 
         LatLngBounds bounds = builder.build();
+
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
     }
 }
