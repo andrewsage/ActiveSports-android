@@ -23,6 +23,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
     public final static String EXTRA_OPPORTUNITY_ID = "com.xoverto.activeaberdeen.OPPORTUNITY_ID";
     public final static String EXTRA_SEARCH_DAY = "SEARCH_DAY";
     public final static String EXTRA_SEARCH_NAME ="NAME";
+    public final static String EXTRA_SEARCH_VENUE = "VENUE_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +68,18 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
 
         String day = null;
         String name = null;
+        String venueId = null;
 
         if(getIntent() != null)
         {
             name = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_NAME);
             day = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY);
+            venueId = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE);
         }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, OpportunityFeedFragment.newInstance(name, day))
+                    .add(R.id.container, OpportunityFeedFragment.newInstance(name, day, venueId))
                     .commit();
         }
     }

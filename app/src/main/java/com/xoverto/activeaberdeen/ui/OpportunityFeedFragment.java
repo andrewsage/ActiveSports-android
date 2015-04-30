@@ -36,10 +36,9 @@ import java.util.ArrayList;
 public class OpportunityFeedFragment extends Fragment implements AbsListView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String TAG = "OPPORTUNITIES";
-    public static final String SEARCH_NAME ="name";
-    public static final String SEARCH_DAY = "day";
-    public static final String VENUE_ID = "venueId";
-
+    public static final String SEARCH_NAME ="search_name";
+    public static final String SEARCH_DAY = "search_day";
+    public static final String SEARCH_VENUE = "search_venue";
 
     private OnFragmentInteractionListener mListener;
     private SimpleCursorAdapter mCursorAdapter;
@@ -55,11 +54,12 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
      */
     private ListAdapter mAdapter;
 
-    public static OpportunityFeedFragment newInstance(String name, String day) {
+    public static OpportunityFeedFragment newInstance(String name, String day, String venueID) {
         OpportunityFeedFragment fragment = new OpportunityFeedFragment();
         Bundle args = new Bundle();
         args.putString(SEARCH_NAME, name);
         args.putString(SEARCH_DAY, day);
+        args.putString(SEARCH_VENUE, venueID);
 
         fragment.setArguments(args);
         return fragment;
@@ -221,7 +221,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
         String name = getArguments().getString(SEARCH_NAME);
         String day = getArguments().getString(SEARCH_DAY);
-        String venueId = getArguments().getString(VENUE_ID);
+        String venueId = getArguments().getString(SEARCH_VENUE);
 
 
         // Construct a where clause to filter the opportunities
@@ -237,16 +237,20 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         }
 
         if(day != null) {
+            if(selectionArgs.size() > 0) {
+                w = w + " AND ";
+            }
             w = w + DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "=?";
             selectionArgs.add(day);
         }
 
         if(venueId != null) {
+            if(selectionArgs.size() > 0) {
+                w = w + " AND ";
+            }
             w = w + DataProvider.KEY_OPPORTUNITY_VENUE_ID + "=?";
             selectionArgs.add(venueId);
         }
-
-
 
         String[] selectionArgsArray = new String[selectionArgs.size()];
         selectionArgsArray = selectionArgs.toArray(selectionArgsArray);
@@ -272,7 +276,6 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         mCursorAdapter.swapCursor(cursor);
-
     }
 
     @Override
@@ -283,6 +286,5 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
         getLoaderManager().restartLoader(0, null, OpportunityFeedFragment.this);
         getActivity().startService(new Intent(getActivity(), DataUpdateService.class));
-
     }
 }

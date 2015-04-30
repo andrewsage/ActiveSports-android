@@ -81,8 +81,7 @@ public class VenueFragment extends Fragment  {
         // Add the Opportunities fragment
         FragmentManager childFragMan = getChildFragmentManager();
         FragmentTransaction childFragTran = childFragMan.beginTransaction();
-        OpportunityFeedFragment fragOpportunities = new OpportunityFeedFragment();
-        fragOpportunities.setArguments(getArguments());
+        OpportunityFeedFragment fragOpportunities = OpportunityFeedFragment.newInstance(null, null, getArguments().getString(VENUE_ID_KEY));
         childFragTran.add(R.id.fragement_opportunities, fragOpportunities);
         childFragTran.commit();
 
