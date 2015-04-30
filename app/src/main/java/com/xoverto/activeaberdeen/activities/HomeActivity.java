@@ -9,7 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.xoverto.activeaberdeen.BuildConfig;
 import com.xoverto.activeaberdeen.R;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
@@ -20,6 +22,7 @@ public class HomeActivity extends ActionBarActivity {
     Button todayButton;
     Button venuesButton;
     Button searchButton;
+    TextView versionTextView;
 
 
     @Override
@@ -35,6 +38,7 @@ public class HomeActivity extends ActionBarActivity {
         todayButton = (Button)findViewById(R.id.button_today);
         venuesButton = (Button)findViewById(R.id.button_venues);
         searchButton = (Button)findViewById(R.id.button_search);
+        versionTextView = (TextView)findViewById(R.id.text_version);
 
         todayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +64,10 @@ public class HomeActivity extends ActionBarActivity {
             }
         });
 
-
-
+        // Get the version details
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
+        versionTextView.setText("Development build\n" + versionName);
     }
 
 

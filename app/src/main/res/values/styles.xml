@@ -24,6 +24,13 @@
         <item name="android:textColor">@color/main_text</item>
     </style>
 
+    <style name="Version">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/main_brand</item>
+        <item name="android:background">@drawable/layout_rounded_corner_bg</item>
+    </style>
+
     <style name="Warning">
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
