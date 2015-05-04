@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.xoverto.activeaberdeen.R;
 import com.xoverto.activeaberdeen.ui.OpportunityFeedFragment;
 
+import java.util.ArrayList;
+
 
 public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFeedFragment.OnFragmentInteractionListener {
 
@@ -24,6 +26,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
     public final static String EXTRA_SEARCH_DAY = "SEARCH_DAY";
     public final static String EXTRA_SEARCH_NAME ="NAME";
     public final static String EXTRA_SEARCH_VENUE = "VENUE_ID";
+    public final static String EXTRA_SEARCH_TAGS = "TAGS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +72,19 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         String day = null;
         String name = null;
         String venueId = null;
+        ArrayList<String> tags = null;
 
         if(getIntent() != null)
         {
             name = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_NAME);
             day = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY);
             venueId = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE);
+            tags = getIntent().getStringArrayListExtra(OpportunitiesActivity.EXTRA_SEARCH_TAGS);
         }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, OpportunityFeedFragment.newInstance(name, day, venueId))
+                    .add(R.id.container, OpportunityFeedFragment.newInstance(name, day, venueId, tags))
                     .commit();
         }
     }

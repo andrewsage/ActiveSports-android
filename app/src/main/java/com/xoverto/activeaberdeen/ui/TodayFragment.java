@@ -24,6 +24,7 @@ import com.xoverto.activeaberdeen.activities.OpportunitiesActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -54,8 +55,11 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
                 String todayName = sdf.format(c.getTime());
+                ArrayList<String> tagsArray = new ArrayList<String>();
+                tagsArray.add("strength");
 
                 Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+                intent.putStringArrayListExtra(OpportunitiesActivity.EXTRA_SEARCH_TAGS, tagsArray);
                 intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);
                 startActivity(intent);
             }

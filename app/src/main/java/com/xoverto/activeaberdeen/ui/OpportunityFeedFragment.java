@@ -39,6 +39,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     public static final String SEARCH_NAME ="search_name";
     public static final String SEARCH_DAY = "search_day";
     public static final String SEARCH_VENUE = "search_venue";
+    public static final String SEARCH_TAGS = "search_tags";
 
     private OnFragmentInteractionListener mListener;
     private SimpleCursorAdapter mCursorAdapter;
@@ -54,12 +55,13 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
      */
     private ListAdapter mAdapter;
 
-    public static OpportunityFeedFragment newInstance(String name, String day, String venueID) {
+    public static OpportunityFeedFragment newInstance(String name, String day, String venueID, ArrayList<String> tags) {
         OpportunityFeedFragment fragment = new OpportunityFeedFragment();
         Bundle args = new Bundle();
         args.putString(SEARCH_NAME, name);
         args.putString(SEARCH_DAY, day);
         args.putString(SEARCH_VENUE, venueID);
+        args.putStringArrayList(SEARCH_TAGS, tags);
 
         fragment.setArguments(args);
         return fragment;
@@ -222,6 +224,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         String name = getArguments().getString(SEARCH_NAME);
         String day = getArguments().getString(SEARCH_DAY);
         String venueId = getArguments().getString(SEARCH_VENUE);
+        ArrayList<String> tags = getArguments().getStringArrayList(SEARCH_TAGS);
 
 
         // Construct a where clause to filter the opportunities
@@ -250,6 +253,22 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
             }
             w = w + DataProvider.KEY_OPPORTUNITY_VENUE_ID + "=?";
             selectionArgs.add(venueId);
+        }
+
+        if(tags != null) {
+            if(selectionArgs.size() > 0) {
+                w = w + " AND ";
+            }
+            w = w + "(";
+            for(int i = 0; i < tags.size(); i++) {
+                String tag = tags.get(i);
+                if(i > 0) {
+                    w = w + " OR ";
+                }
+                w = w + DataProvider.KEY_OPPORTUNITY_TAGS + " like ? ";
+                selectionArgs.add("%" + tag + "%");
+            }
+            w = w + ")";
         }
 
         String[] selectionArgsArray = new String[selectionArgs.size()];
