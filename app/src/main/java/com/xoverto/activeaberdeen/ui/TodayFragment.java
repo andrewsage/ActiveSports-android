@@ -162,6 +162,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
         int locationCount = 0;
+        int validLocations = 0;
         double lat = 0;
         double lng = 0;
         long updated = 0;
@@ -192,13 +193,16 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 String text = "Last Updated: " + dateF.format(new Date(updated));
 
                 drawMarker(location, name, text);
+                validLocations++;
             }
 
             cursor.moveToNext();
         }
 
-        LatLngBounds bounds = builder.build();
+        if(validLocations > 0) {
+            LatLngBounds bounds = builder.build();
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+        }
     }
 }
