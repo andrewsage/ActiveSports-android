@@ -6,6 +6,13 @@
         <item name="actionMenuTextColor">@color/main_brand</item>
     </style>
 
+    <style name="SearchTitle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/main_text</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
     <style name="HeadlineTitle">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>

@@ -15,11 +15,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search by activity name"
+            android:text="@string/search_by_activity_name"
             android:id="@+id/textView"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            style="@style/SearchTitle" />
 
         <EditText
             android:layout_width="match_parent"
@@ -55,7 +56,8 @@
             android:layout_height="wrap_content"
             android:text="Day of the week"
             android:id="@+id/textView2"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            style="@style/SearchTitle" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -68,17 +70,25 @@
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Today"
+                android:text="@string/today"
                 android:id="@+id/today_button"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/button_custom"
+                android:textColor="@drawable/button_custom"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="10dp" />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Tomorrow"
+                android:text="@string/tomorrow"
                 android:id="@+id/tomorrow_button"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@drawable/button_custom"
+                android:textColor="@drawable/button_custom"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp" />
         </LinearLayout>
 
         <Spinner
@@ -86,7 +96,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/day_spinner"
             android:prompt="@string/day_of_week_label"
-            android:spinnerMode="dialog" />
+            android:spinnerMode="dialog"
+            android:layout_margin="10dp" />
 
     </LinearLayout>
 

@@ -147,8 +147,9 @@ public class SearchActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     Calendar calendar = Calendar.getInstance();
-                    int day = (calendar.get(Calendar.DAY_OF_WEEK) + 1) % 7;
-                    mDaysSpinner.setSelection(day - 1, true);
+                    int day = calendar.get(Calendar.DAY_OF_WEEK);
+                    day = (day % 7);
+                    mDaysSpinner.setSelection(day, true);
                 }
             });
 

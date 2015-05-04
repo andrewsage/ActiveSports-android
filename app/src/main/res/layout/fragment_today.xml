@@ -80,7 +80,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@color/positive_action"
+            android:background="@drawable/layout_rounded_positive_button_bg"
             android:textColor="@android:color/white"
             android:textSize="21sp"
             android:text="View results" />
