@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +37,11 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     Button mResultsButton;
+    ToggleButton mStrengthButton;
+    ToggleButton mCardioButton;
+    ToggleButton mWeightlossButton;
+    ToggleButton mFlexibilityButton;
+    ArrayList<String> mTagsArray;
 
     public static FragmentManager fgmanger;
 
@@ -47,6 +54,57 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         View rootView = inflater.inflate(R.layout.fragment_today, container, false);
 
         mResultsButton = (Button) rootView.findViewById(R.id.results_button);
+        mStrengthButton = (ToggleButton) rootView.findViewById(R.id.toggle_strength);
+        mCardioButton = (ToggleButton) rootView.findViewById(R.id.toggle_cardio);
+        mWeightlossButton = (ToggleButton) rootView.findViewById(R.id.toggle_weightloss);
+        mFlexibilityButton = (ToggleButton) rootView.findViewById(R.id.toggle_flexibility);
+
+        mTagsArray = new ArrayList<String>();
+
+        mStrengthButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mTagsArray.add("strength");
+                } else {
+                    mTagsArray.remove("strength");
+                }
+            }
+        });
+
+        mCardioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mTagsArray.add("cardio");
+                } else {
+                    mTagsArray.remove("cardio");
+                }
+            }
+        });
+
+        mWeightlossButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mTagsArray.add("weightloss");
+                } else {
+                    mTagsArray.remove("weightloss");
+                }
+            }
+        });
+
+        mFlexibilityButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mTagsArray.add("flexibility");
+                } else {
+                    mTagsArray.remove("flexibility");
+                }
+            }
+        });
+
+        mStrengthButton.setChecked(true);
+        mCardioButton.setChecked(true);
+        mWeightlossButton.setChecked(true);
+        mFlexibilityButton.setChecked(true);
 
         mResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,11 +113,9 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
                 String todayName = sdf.format(c.getTime());
-                ArrayList<String> tagsArray = new ArrayList<String>();
-                tagsArray.add("strength");
 
                 Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
-                intent.putStringArrayListExtra(OpportunitiesActivity.EXTRA_SEARCH_TAGS, tagsArray);
+                intent.putStringArrayListExtra(OpportunitiesActivity.EXTRA_SEARCH_TAGS, mTagsArray);
                 intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);
                 startActivity(intent);
             }

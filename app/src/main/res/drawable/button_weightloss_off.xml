@@ -4,7 +4,7 @@
         android:color="@android:color/white"
         android:src="@drawable/activity_strength"
         android:state_pressed="true" />
-    <item android:drawable="@drawable/button_default"
+    <item android:drawable="@drawable/toggle_weightloss_off"
         android:color="@color/main_brand"
         android:src="@drawable/activity_strength"
         />

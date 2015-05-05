@@ -256,19 +256,21 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         }
 
         if(tags != null) {
-            if(selectionArgs.size() > 0) {
-                w = w + " AND ";
-            }
-            w = w + "(";
-            for(int i = 0; i < tags.size(); i++) {
-                String tag = tags.get(i);
-                if(i > 0) {
-                    w = w + " OR ";
+            if(tags.size() > 0) {
+                if (selectionArgs.size() > 0) {
+                    w = w + " AND ";
                 }
-                w = w + DataProvider.KEY_OPPORTUNITY_TAGS + " like ? ";
-                selectionArgs.add("%" + tag + "%");
+                w = w + "(";
+                for (int i = 0; i < tags.size(); i++) {
+                    String tag = tags.get(i);
+                    if (i > 0) {
+                        w = w + " OR ";
+                    }
+                    w = w + DataProvider.KEY_OPPORTUNITY_TAGS + " like ? ";
+                    selectionArgs.add("%" + tag + "%");
+                }
+                w = w + ")";
             }
-            w = w + ")";
         }
 
         String[] selectionArgsArray = new String[selectionArgs.size()];

@@ -49,27 +49,42 @@
             android:orientation="horizontal"
             android:gravity="center_horizontal"
             >
-            <ImageButton
+            <ToggleButton
+                android:id="@+id/toggle_strength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/activity_strength"
-                />
-            <ImageButton
+                android:background="@drawable/toggle_strength_selector"
+                android:textOff=""
+                android:textOn=""
+                android:layout_margin="5dp" />
+            <ToggleButton
+                android:id="@+id/toggle_cardio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/activity_cardio"
-                />
-            <ImageButton
+                android:background="@drawable/toggle_cardio_selector"
+                android:textOff=""
+                android:textOn=""
+                android:layout_margin="5dp" />
+
+            <ToggleButton
+                android:id="@+id/toggle_weightloss"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/activity_weightloss"
-                />
-            <ImageButton
+                android:background="@drawable/toggle_weightloss_selector"
+                android:textOff=""
+                android:textOn=""
+                android:layout_margin="5dp" />
+
+            <ToggleButton
+                android:id="@+id/toggle_flexibility"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/activity_flexibility"
-                />
-            </LinearLayout>
+                android:background="@drawable/toggle_flexibility_selector"
+                android:textOff=""
+                android:textOn=""
+                android:layout_margin="5dp" />
+
+        </LinearLayout>
 
 
         <Button
