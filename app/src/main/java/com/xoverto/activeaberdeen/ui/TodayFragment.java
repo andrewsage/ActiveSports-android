@@ -1,7 +1,15 @@
 package com.xoverto.activeaberdeen.ui;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,15 +20,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.R;
@@ -31,11 +43,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by andrew on 14/04/15.
  */
-public class TodayFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>, OnMapReadyCallback {
+public class TodayFragment extends Fragment implements android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor>,
+        OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     Button mResultsButton;
@@ -66,6 +82,10 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         mFlexibilityButton = (ToggleButton) rootView.findViewById(R.id.toggle_flexibility);
 
         mTagsArray = new ArrayList<String>();
+        mTagsArray.add("strength");
+        mTagsArray.add("cardio");
+        mTagsArray.add("weightloss");
+        mTagsArray.add("flexibility");
 
         mStrengthButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -74,6 +94,8 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 } else {
                     mTagsArray.remove("strength");
                 }
+
+                filterResults();
             }
         });
 
@@ -84,6 +106,8 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 } else {
                     mTagsArray.remove("cardio");
                 }
+                filterResults();
+
             }
         });
 
@@ -94,6 +118,8 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 } else {
                     mTagsArray.remove("weightloss");
                 }
+                filterResults();
+
             }
         });
 
@@ -104,13 +130,10 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 } else {
                     mTagsArray.remove("flexibility");
                 }
+                filterResults();
+
             }
         });
-
-        mStrengthButton.setChecked(true);
-        mCardioButton.setChecked(true);
-        mWeightlossButton.setChecked(true);
-        mFlexibilityButton.setChecked(true);
 
         mResultsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,30 +156,68 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        getLoaderManager().initLoader(0, null, this);
+        mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(getActivity().getLayoutInflater()));
+        mMap.setOnInfoWindowClickListener(this);
+        filterResults();
     }
 
-    private void drawMarker(LatLng latLng, String name, String updated){
-        // add a marker to the map indicating our current position
-        mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .snippet(updated)
-                .title(name));
+    private void filterResults() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        String todayName = sdf.format(c.getTime());
+
+        Bundle args = new Bundle();
+        args.putString(OpportunityFeedFragment.SEARCH_DAY, todayName);
+        args.putStringArrayList(OpportunityFeedFragment.SEARCH_TAGS, mTagsArray);
+        getLoaderManager().restartLoader(0, args, TodayFragment.this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String day = args.getString(OpportunityFeedFragment.SEARCH_DAY);
+        ArrayList<String> tags = args.getStringArrayList(OpportunityFeedFragment.SEARCH_TAGS);
+
+
+        // Construct a where clause to filter the opportunities
+        String w = "";
+        ArrayList<String> selectionArgs = new ArrayList<String>();
+
+        if(day != null) {
+            if(selectionArgs.size() > 0) {
+                w = w + " AND ";
+            }
+            w = w + DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "=?";
+            selectionArgs.add(day);
+        }
+
+        if(tags != null) {
+            if(tags.size() > 0) {
+                if (selectionArgs.size() > 0) {
+                    w = w + " AND ";
+                }
+                w = w + "(";
+                for (int i = 0; i < tags.size(); i++) {
+                    String tag = tags.get(i);
+                    if (i > 0) {
+                        w = w + " OR ";
+                    }
+                    w = w + DataProvider.KEY_OPPORTUNITY_TAGS + " like ? ";
+                    selectionArgs.add("%" + tag + "%");
+                }
+                w = w + ")";
+            }
+        }
+
+        String[] selectionArgsArray = new String[selectionArgs.size()];
+        selectionArgsArray = selectionArgs.toArray(selectionArgsArray);
+
         String[] projection = {
                 DataProvider.KEY_ID,
-                DataProvider.KEY_NAME,
-                DataProvider.KEY_VENUE_ID,
-                DataProvider.KEY_LOCATION_LAT,
-                DataProvider.KEY_LOCATION_LNG,
-                DataProvider.KEY_UPDATED
+                DataProvider.KEY_OPPORTUNITY_VENUE_ID
         };
         CursorLoader loader = new CursorLoader(getActivity(),
-                DataProvider.CONTENT_URI_VENUES,
-                projection, null, null, null);
+                DataProvider.CONTENT_URI_OPPORTUNITIES,
+                projection, w, selectionArgsArray, null);
 
         return loader;
     }
@@ -173,44 +234,142 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         if (mMap != null) {
             mMap.clear();
 
-            int locationCount = 0;
             int validLocations = 0;
             double lat = 0;
             double lng = 0;
             long updated = 0;
             String name = "";
 
-            locationCount = cursor.getCount();
+            int opportunitiesCount = 0;
+            opportunitiesCount = cursor.getCount();
             cursor.moveToFirst();
 
+            ContentResolver cr = loader.getContext().getContentResolver();
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-            for (int i = 0; i < locationCount; i++) {
-                lat = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
-                lng = cursor.getDouble(cursor.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
+            // Get a list of venues and the number of opportunities they have
+            HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
 
-                // Ignore any of  venues with no location set
-                if (lat != 0.0 && lng != 0.0) {
-                    name = cursor.getString(cursor.getColumnIndex(DataProvider.KEY_NAME));
-                    updated = cursor.getLong(cursor.getColumnIndex(DataProvider.KEY_UPDATED));
-
-                    LatLng location = new LatLng(lat, lng);
-                    builder.include(location);
-
-                    DateFormat dateF = DateFormat.getDateTimeInstance();
-                    String text = "Last Updated: " + dateF.format(new Date(updated));
-
-                    drawMarker(location, name, text);
-                    validLocations++;
+            for(int i = 0; i < opportunitiesCount; i++) {
+                String venue_id = cursor.getString(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_VENUE_ID));
+                Integer count = 0;
+                if(hashMap.containsKey(venue_id)) {
+                    count = (Integer) hashMap.get(venue_id);
                 }
-
+                count++;
+                hashMap.put(venue_id, count);
                 cursor.moveToNext();
+            }
+
+            Iterator iterator = hashMap.keySet().iterator();
+
+            while(iterator.hasNext()) {
+
+                String key = (String)iterator.next();
+                Integer activitiesCount = (Integer)hashMap.get(key);
+
+                String w = DataProvider.KEY_VENUE_ID + "=?";
+                ArrayList<String> selectionArgs = new ArrayList<String>();
+                selectionArgs.add(key);
+                String[] selectionArgsArray = new String[selectionArgs.size()];
+                selectionArgsArray = selectionArgs.toArray(selectionArgsArray);
+
+                Cursor query = cr.query(DataProvider.CONTENT_URI_VENUES, null, w, selectionArgsArray, null);
+
+                if(query.getCount() > 0) {
+                    query.moveToFirst();
+                    lat = query.getDouble(query.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
+                    lng = query.getDouble(query.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
+
+                    // Ignore any of  venues with no location set
+                    if (lat != 0.0 && lng != 0.0) {
+                        validLocations++;
+
+                        name = query.getString(query.getColumnIndex(DataProvider.KEY_NAME));
+                        LatLng location = new LatLng(lat, lng);
+                        builder.include(location);
+
+                        String text = activitiesCount.toString();
+                        drawMarker(location, name, text);
+                    }
+                }
+                query.close();
             }
 
             if (validLocations > 0) {
                 LatLngBounds bounds = builder.build();
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 5));
             }
+        }
+    }
+
+    private void drawMarker(LatLng latLng, String name, String text){
+
+        Resources resources = getResources();
+        float scale = resources.getDisplayMetrics().density;
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.map_pin);
+        Bitmap.Config bitmapConfig = bitmap.getConfig();
+
+        if(bitmapConfig == null) {
+            bitmapConfig = Bitmap.Config.ARGB_8888;
+        }
+        bitmap = bitmap.copy(bitmapConfig, true);
+
+        Canvas canvas1 = new Canvas(bitmap);
+
+        // paint defines the text color,
+        // stroke width, size
+        Paint paint = new Paint();
+        paint.setTextSize(20);
+        paint.setFakeBoldText(true);
+        paint.setColor(Color.BLACK);
+
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        int x = (bitmap.getWidth() - bounds.width()) / 2;
+        int y = (bitmap.getHeight() / 2);
+        canvas1.drawText(text, x, y, paint);
+
+        // add a marker to the map indicating our current position
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                .anchor(0.5f, 1)
+                //.snippet(text)
+                .title(name));
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+    }
+
+    class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+        LayoutInflater inflater = null;
+
+        MyInfoWindowAdapter(LayoutInflater inflater) {
+            this.inflater = inflater;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            View contentsView = inflater.inflate(R.layout.custom_info_contents, null);
+
+            ImageView imageView = ((ImageView)contentsView.findViewById(R.id.image));
+
+            TextView tvTitle = ((TextView)contentsView.findViewById(R.id.title));
+            tvTitle.setText(marker.getTitle());
+            TextView tvSnippet = ((TextView)contentsView.findViewById(R.id.snippet));
+            tvSnippet.setText(marker.getSnippet());
+
+            return contentsView;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

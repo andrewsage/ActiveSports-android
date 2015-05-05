@@ -53,14 +53,35 @@
             android:orientation="horizontal"
             android:gravity="center_horizontal"
             >
-            <ToggleButton
-                android:id="@+id/toggle_strength"
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/toggle_strength_selector"
-                android:textOff=""
-                android:textOn=""
-                android:layout_margin="5dp" />
+                android:layout_height="wrap_content">
+
+                <ToggleButton
+                    android:id="@+id/toggle_strength"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/toggle_strength_selector"
+                    android:textOff=""
+                    android:textOn=""
+                    android:layout_margin="5dp"
+                    android:checked="true" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/ActivityTypeButtonTitle"
+                    android:text="Strength"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/textView3" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
             <ToggleButton
                 android:id="@+id/toggle_cardio"
                 android:layout_width="wrap_content"
@@ -68,8 +89,21 @@
                 android:background="@drawable/toggle_cardio_selector"
                 android:textOff=""
                 android:textOn=""
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:checked="true" />
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/ActivityTypeButtonTitle"
+                    android:text="Cardio"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/textView3" />
+                </LinearLayout>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
             <ToggleButton
                 android:id="@+id/toggle_weightloss"
                 android:layout_width="wrap_content"
@@ -77,8 +111,21 @@
                 android:background="@drawable/toggle_weightloss_selector"
                 android:textOff=""
                 android:textOn=""
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:checked="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/ActivityTypeButtonTitle"
+                    android:text="Weight Loss"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/textView3" />
+                </LinearLayout>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
             <ToggleButton
                 android:id="@+id/toggle_flexibility"
                 android:layout_width="wrap_content"
@@ -86,7 +133,17 @@
                 android:background="@drawable/toggle_flexibility_selector"
                 android:textOff=""
                 android:textOn=""
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:checked="true" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/ActivityTypeButtonTitle"
+                    android:text="Flexibility"
+                    android:gravity="center_horizontal"
+                    android:id="@+id/textView3" />
+                </LinearLayout>
 
         </LinearLayout>
 
