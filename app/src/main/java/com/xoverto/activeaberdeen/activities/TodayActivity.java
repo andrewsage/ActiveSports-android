@@ -39,7 +39,10 @@ import com.xoverto.activeaberdeen.ui.TodayFragment;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class TodayActivity extends ActionBarActivity {
+public class TodayActivity extends ActionBarActivity implements TodayFragment.OnDataPass {
+
+    private TextView mActionBarTitleView;
+    private TextView mActionBarSubTitleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +55,10 @@ public class TodayActivity extends ActionBarActivity {
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 
         LinearLayout actionBarLayout = (LinearLayout)getLayoutInflater().inflate(R.layout.opportunties_actionbar, null);
-        TextView actionBarTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
-        actionBarTitleView.setText("Activities");
-        TextView actionBarSubTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_subtitleview);
-        actionBarSubTitleView.setText("x Activities");
+        mActionBarTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
+        mActionBarTitleView.setText("Activities");
+        mActionBarSubTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_subtitleview);
+        mActionBarSubTitleView.setText("x Activities");
         android.app.ActionBar.LayoutParams params = new android.app.ActionBar.LayoutParams(
                 android.app.ActionBar.LayoutParams.MATCH_PARENT,
                 android.app.ActionBar.LayoutParams.MATCH_PARENT,
@@ -108,6 +111,12 @@ public class TodayActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDataPass(int activities, String date) {
+        mActionBarTitleView.setText(activities + " Activities near you");
+        mActionBarSubTitleView.setText("(" + date + ")");
     }
 
 }

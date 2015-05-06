@@ -1,5 +1,6 @@
 package com.xoverto.activeaberdeen.ui;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.R;
 import com.xoverto.activeaberdeen.activities.OpportunitiesActivity;
+import com.xoverto.activeaberdeen.util.TimeUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -153,6 +155,14 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         return rootView;
     }
 
+    OnDataPass dataPasser;
+
+    @Override
+    public void onAttach(Activity a) {
+        super.onAttach(a);
+        dataPasser = (OnDataPass) a;
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -242,6 +252,13 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
 
             int opportunitiesCount = 0;
             opportunitiesCount = cursor.getCount();
+
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE d");
+            String todayName = sdf.format(c.getTime());
+
+            passData(opportunitiesCount, todayName + TimeUtil.getDayOfMonthSuffix(c.get(Calendar.DAY_OF_MONTH)));
+
             cursor.moveToFirst();
 
             ContentResolver cr = loader.getContext().getContentResolver();
@@ -372,4 +389,15 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
             return null;
         }
     }
+
+    public void passData(int activities, String date) {
+        dataPasser.onDataPass(activities, date);
+    }
+
+    public interface OnDataPass {
+        public void onDataPass(int activities, String date);
+    }
+
+
+
 }
