@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.R;
 import com.xoverto.activeaberdeen.activities.OpportunitiesActivity;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -62,6 +64,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
     ToggleButton mWeightlossButton;
     ToggleButton mFlexibilityButton;
     ArrayList<String> mTagsArray;
+    private Hashtable<String, String> mMarkers;
 
     public static FragmentManager fgmanger;
 
@@ -82,6 +85,9 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         mCardioButton = (ToggleButton) rootView.findViewById(R.id.toggle_cardio);
         mWeightlossButton = (ToggleButton) rootView.findViewById(R.id.toggle_weightloss);
         mFlexibilityButton = (ToggleButton) rootView.findViewById(R.id.toggle_flexibility);
+
+
+        mMarkers = new Hashtable<String, String>();
 
         mTagsArray = new ArrayList<String>();
         mTagsArray.add("strength");
@@ -251,6 +257,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
             double lng = 0;
             long updated = 0;
             String name = "";
+            String logoName = "";
 
             int opportunitiesCount = 0;
             opportunitiesCount = cursor.getCount();
@@ -282,6 +289,9 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
 
             Iterator iterator = hashMap.keySet().iterator();
 
+            mMarkers.clear();
+
+
             while(iterator.hasNext()) {
 
                 String key = (String)iterator.next();
@@ -299,6 +309,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                     query.moveToFirst();
                     lat = query.getDouble(query.getColumnIndex(DataProvider.KEY_LOCATION_LAT));
                     lng = query.getDouble(query.getColumnIndex(DataProvider.KEY_LOCATION_LNG));
+                    logoName = query.getString(query.getColumnIndex(DataProvider.KEY_VENUE_OWNER_SLUG));
 
                     // Ignore any of  venues with no location set
                     if (lat != 0.0 && lng != 0.0) {
@@ -309,7 +320,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                         builder.include(location);
 
                         String text = activitiesCount.toString();
-                        drawMarker(location, name, text);
+                        drawMarker(location, name, text, logoName);
                     }
                 }
                 query.close();
@@ -322,7 +333,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         }
     }
 
-    private void drawMarker(LatLng latLng, String name, String text){
+    private void drawMarker(LatLng latLng, String name, String text, String logoName){
 
         Resources resources = getResources();
         float scale = resources.getDisplayMetrics().density;
@@ -350,12 +361,14 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         canvas1.drawText(text, x, y, paint);
 
         // add a marker to the map indicating our current position
-        mMap.addMarker(new MarkerOptions()
+        Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
                 .anchor(0.5f, 1)
                 //.snippet(text)
                 .title(name));
+
+        mMarkers.put(marker.getId(), logoName);
     }
 
     @Override
@@ -375,12 +388,20 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         public View getInfoContents(Marker marker) {
             View contentsView = inflater.inflate(R.layout.custom_info_contents, null);
 
-            ImageView imageView = ((ImageView)contentsView.findViewById(R.id.image));
+            String logoName = mMarkers.get(marker.getId());
 
+            ImageView imageView = ((ImageView)contentsView.findViewById(R.id.image));
             TextView tvTitle = ((TextView)contentsView.findViewById(R.id.title));
-            tvTitle.setText(marker.getTitle());
-            TextView tvSnippet = ((TextView)contentsView.findViewById(R.id.snippet));
-            tvSnippet.setText(marker.getSnippet());
+
+
+            if(logoName.isEmpty() == false) {
+                int resID = getResources().getIdentifier(logoName, "drawable", getActivity().getPackageName());
+                imageView.setImageResource(resID);
+                tvTitle.setVisibility(View.GONE);
+            } else {
+                tvTitle.setText(marker.getTitle());
+            }
+
 
             return contentsView;
         }
