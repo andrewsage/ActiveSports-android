@@ -146,6 +146,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 String todayName = sdf.format(c.getTime());
 
                 Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+                intent.putExtra(OpportunitiesActivity.EXTRA_LIST_TITLE, "What's on today");
                 intent.putStringArrayListExtra(OpportunitiesActivity.EXTRA_SEARCH_TAGS, mTagsArray);
                 intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);
                 startActivity(intent);

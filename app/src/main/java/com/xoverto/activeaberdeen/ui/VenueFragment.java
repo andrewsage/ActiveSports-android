@@ -114,7 +114,9 @@ public class VenueFragment extends Fragment implements OnMapReadyCallback {
                 String todayName = sdf.format(c.getTime());
 
                 Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
-                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE, getArguments().getString(VENUE_ID_KEY));
+                intent.putExtra(OpportunitiesActivity.EXTRA_LIST_TITLE, "What's on today");
+                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);
+                intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE, getArguments().getString(VENUE_ID_KEY));
                 startActivity(intent);
             }
         });
@@ -122,8 +124,10 @@ public class VenueFragment extends Fragment implements OnMapReadyCallback {
         mAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String name = getArguments().getString(VENUE_NAME);
 
                 Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+                intent.putExtra(OpportunitiesActivity.EXTRA_LIST_TITLE, name);
                 intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE, getArguments().getString(VENUE_ID_KEY));
                 startActivity(intent);
             }

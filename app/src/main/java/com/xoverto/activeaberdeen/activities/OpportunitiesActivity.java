@@ -20,13 +20,18 @@ import com.xoverto.activeaberdeen.ui.OpportunityFeedFragment;
 import java.util.ArrayList;
 
 
-public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFeedFragment.OnFragmentInteractionListener {
+public class OpportunitiesActivity extends ActionBarActivity implements OpportunityFeedFragment.OnFragmentInteractionListener,
+OpportunityFeedFragment.OnDataPass {
 
     public final static String EXTRA_OPPORTUNITY_ID = "com.xoverto.activeaberdeen.OPPORTUNITY_ID";
     public final static String EXTRA_SEARCH_DAY = "SEARCH_DAY";
     public final static String EXTRA_SEARCH_NAME ="NAME";
     public final static String EXTRA_SEARCH_VENUE = "VENUE_ID";
     public final static String EXTRA_SEARCH_TAGS = "TAGS";
+    public final static String EXTRA_LIST_TITLE = "LIST_TITLE";
+
+    private TextView mActionBarTitleView;
+    private TextView mActionBarSubTitleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +45,10 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 
         LinearLayout actionBarLayout = (LinearLayout)getLayoutInflater().inflate(R.layout.opportunties_actionbar, null);
-        TextView actionBarTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
-        actionBarTitleView.setText("Activities");
-        TextView actionBarSubTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_subtitleview);
-        actionBarSubTitleView.setText("x Activities");
+        mActionBarTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_titleview);
+        mActionBarTitleView.setText("Activities");
+        mActionBarSubTitleView = (TextView)actionBarLayout.findViewById(R.id.actionbar_subtitleview);
+        mActionBarSubTitleView.setText("x Activities");
         ActionBar.LayoutParams params = new ActionBar.LayoutParams(
                 ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.MATCH_PARENT,
@@ -69,6 +74,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         actionBar.setCustomView(actionBarLayout, params);
         actionBar.setDisplayHomeAsUpEnabled(false);
 
+        String title = null;
         String day = null;
         String name = null;
         String venueId = null;
@@ -76,6 +82,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
 
         if(getIntent() != null)
         {
+            title = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_LIST_TITLE);
             name = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_NAME);
             day = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY);
             venueId = getIntent().getStringExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE);
@@ -84,7 +91,7 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, OpportunityFeedFragment.newInstance(name, day, venueId, tags))
+                    .add(R.id.container, OpportunityFeedFragment.newInstance(title, name, day, venueId, tags))
                     .commit();
         }
     }
@@ -115,5 +122,11 @@ public class OpportunitiesActivity extends ActionBarActivity implements Opportun
         Intent intent = new Intent(this, OpportunityActivity.class);
         intent.putExtra(EXTRA_OPPORTUNITY_ID, value);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDataPass(int activities, String title) {
+        mActionBarTitleView.setText(title);
+        mActionBarSubTitleView.setText(activities + " Activities");
     }
 }

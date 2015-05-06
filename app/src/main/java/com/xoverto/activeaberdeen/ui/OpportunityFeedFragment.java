@@ -40,6 +40,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     public static final String SEARCH_DAY = "search_day";
     public static final String SEARCH_VENUE = "search_venue";
     public static final String SEARCH_TAGS = "search_tags";
+    public static final String LIST_TITLE = "list_title";
 
     private OnFragmentInteractionListener mListener;
     private SimpleCursorAdapter mCursorAdapter;
@@ -55,9 +56,10 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
      */
     private ListAdapter mAdapter;
 
-    public static OpportunityFeedFragment newInstance(String name, String day, String venueID, ArrayList<String> tags) {
+    public static OpportunityFeedFragment newInstance(String title, String name, String day, String venueID, ArrayList<String> tags) {
         OpportunityFeedFragment fragment = new OpportunityFeedFragment();
         Bundle args = new Bundle();
+        args.putString(LIST_TITLE, title);
         args.putString(SEARCH_NAME, name);
         args.putString(SEARCH_DAY, day);
         args.putString(SEARCH_VENUE, venueID);
@@ -159,9 +161,14 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         super.onActivityCreated(savedInstanceState);
     }
 
+
+    OnDataPass dataPasser;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        dataPasser = (OnDataPass) activity;
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -296,6 +303,14 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        Bundle args = getArguments();
+        String title = args.getString(LIST_TITLE);
+        int opportunitiesCount = 0;
+        opportunitiesCount = cursor.getCount();
+
+        passData(opportunitiesCount, title);
+
         mCursorAdapter.swapCursor(cursor);
     }
 
@@ -307,5 +322,13 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
         getLoaderManager().restartLoader(0, null, OpportunityFeedFragment.this);
         getActivity().startService(new Intent(getActivity(), DataUpdateService.class));
+    }
+
+    public void passData(int activities, String title) {
+        dataPasser.onDataPass(activities, title);
+    }
+
+    public interface OnDataPass {
+        public void onDataPass(int activities, String title);
     }
 }

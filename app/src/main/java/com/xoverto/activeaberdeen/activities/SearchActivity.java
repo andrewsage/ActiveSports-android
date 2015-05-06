@@ -158,6 +158,7 @@ public class SearchActivity extends ActionBarActivity {
                 public void onClick(View v) {
 
                     Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+                    intent.putExtra(OpportunitiesActivity.EXTRA_LIST_TITLE, "Advanced Search");
                     intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_NAME, mNameEditText.getText().toString());
                     if(mDaysSpinner.getSelectedItemPosition() < 7) {
                         intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, days[mDaysSpinner.getSelectedItemPosition()]);
