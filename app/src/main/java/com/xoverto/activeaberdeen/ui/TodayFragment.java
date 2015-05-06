@@ -167,6 +167,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        mMap.setMyLocationEnabled(true);
         mMap.setInfoWindowAdapter(new MyInfoWindowAdapter(getActivity().getLayoutInflater()));
         mMap.setOnInfoWindowClickListener(this);
         filterResults();
