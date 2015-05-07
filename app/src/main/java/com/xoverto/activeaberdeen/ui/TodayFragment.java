@@ -65,6 +65,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
     ToggleButton mFlexibilityButton;
     ArrayList<String> mTagsArray;
     private Hashtable<String, String> mMarkers;
+    private Hashtable<String, String> mMarkersVenueIds;
 
     public static FragmentManager fgmanger;
 
@@ -88,6 +89,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
 
 
         mMarkers = new Hashtable<String, String>();
+        mMarkersVenueIds = new Hashtable<String, String>();
 
         mTagsArray = new ArrayList<String>();
         mTagsArray.add("strength");
@@ -290,7 +292,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
             Iterator iterator = hashMap.keySet().iterator();
 
             mMarkers.clear();
-
+            mMarkersVenueIds.clear();
 
             while(iterator.hasNext()) {
 
@@ -320,7 +322,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                         builder.include(location);
 
                         String text = activitiesCount.toString();
-                        drawMarker(location, name, text, logoName);
+                        drawMarker(location, name, text, logoName, key);
                     }
                 }
                 query.close();
@@ -333,7 +335,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
         }
     }
 
-    private void drawMarker(LatLng latLng, String name, String text, String logoName){
+    private void drawMarker(LatLng latLng, String name, String text, String logoName, String venueId){
 
         Resources resources = getResources();
         float scale = resources.getDisplayMetrics().density;
@@ -369,10 +371,23 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 .title(name));
 
         mMarkers.put(marker.getId(), logoName);
+        mMarkersVenueIds.put(marker.getId(), venueId);
     }
 
     @Override
     public void onInfoWindowClick(Marker marker) {
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        String todayName = sdf.format(c.getTime());
+        String venueId = mMarkersVenueIds.get(marker.getId());
+
+        Intent intent = new Intent(getActivity(), OpportunitiesActivity.class);
+        intent.putExtra(OpportunitiesActivity.EXTRA_LIST_TITLE, "What's on today");
+        intent.putStringArrayListExtra(OpportunitiesActivity.EXTRA_SEARCH_TAGS, mTagsArray);
+        intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_DAY, todayName);
+        intent.putExtra(OpportunitiesActivity.EXTRA_SEARCH_VENUE, venueId);
+        startActivity(intent);
 
     }
 
