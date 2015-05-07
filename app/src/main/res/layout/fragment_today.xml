@@ -159,7 +159,8 @@
             android:background="@drawable/layout_rounded_positive_button_bg"
             android:textColor="@android:color/white"
             android:textSize="21sp"
-            android:text="View results" />
+            android:text="View results"
+            android:visibility="gone" />
 
     </LinearLayout>
 
