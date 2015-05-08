@@ -407,17 +407,13 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
 
             ImageView imageView = ((ImageView)contentsView.findViewById(R.id.image));
             TextView tvTitle = ((TextView)contentsView.findViewById(R.id.title));
-
+            tvTitle.setText(marker.getTitle());
 
             if(logoName.isEmpty() == false) {
                 int resID = getResources().getIdentifier(logoName, "drawable", getActivity().getPackageName());
                 imageView.setImageResource(resID);
-                tvTitle.setVisibility(View.GONE);
-            } else {
-                tvTitle.setText(marker.getTitle());
             }
-
-
+            
             return contentsView;
         }
 
