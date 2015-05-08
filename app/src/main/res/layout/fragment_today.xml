@@ -16,7 +16,7 @@
         android:id="@+id/map"
         tools:context="com.xoverto.activeaberdeen.activities.MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        />
+        android:layout_above="@+id/nav_bar" />
 
 
     <LinearLayout
