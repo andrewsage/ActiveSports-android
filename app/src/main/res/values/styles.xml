@@ -38,6 +38,20 @@
         <item name="android:textColor">@color/main_text</item>
     </style>
 
+    <style name="TagLabel">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/main_brand</item>
+    </style>
+
+    <style name="Tag">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/layout_tag_rounded_corner_bg</item>
+    </style>
+
     <style name="Version">
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>

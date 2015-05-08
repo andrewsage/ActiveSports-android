@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -47,7 +48,10 @@ public class OpportunityFragment extends Fragment implements OnMapReadyCallback 
     private TextView addressText;
     private TextView telephoneText;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private TextView mTagsText;
+    private LinearLayout mTagsSectionLinearLayout;
+    private LinearLayout mTagsLinearLayout;
+
+
 
     public OpportunityFragment() {
     }
@@ -90,7 +94,9 @@ public class OpportunityFragment extends Fragment implements OnMapReadyCallback 
         descriptionText = (TextView)rootView.findViewById(R.id.description);
         addressText = (TextView)rootView.findViewById(R.id.address);
         telephoneText = (TextView)rootView.findViewById(R.id.telephone);
-        mTagsText = (TextView)rootView.findViewById(R.id.tags);
+
+        mTagsSectionLinearLayout = (LinearLayout)rootView.findViewById(R.id.tags_section);
+        mTagsLinearLayout = (LinearLayout)rootView.findViewById(R.id.tagsLayout);
 
         return rootView;
     }
@@ -116,7 +122,31 @@ public class OpportunityFragment extends Fragment implements OnMapReadyCallback 
         descriptionText.setText(Html.fromHtml(description));
         addressText.setText(address);
         telephoneText.setText(telephone);
-        mTagsText.setText(tags);
+
+        if(tags.isEmpty() == false) {
+            tags = tags.replace(", ", ",");
+
+            String[] tagsArray = tags.split(",");
+            for (int t = 0; t < tagsArray.length; t++) {
+                String tag = tagsArray[t];
+
+                StringBuilder tagSb = new StringBuilder(tag.toLowerCase());
+                tagSb.setCharAt(0, Character.toUpperCase(tagSb.charAt(0)));
+                tag = tagSb.toString();
+
+                TextView tagText = (TextView) getLayoutInflater(savedInstanceState).inflate(R.layout.template_tag_textview, null);
+                tagText.setText(tag);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.setMargins(10, 0, 10, 0);
+                tagText.setLayoutParams(params);
+
+                mTagsLinearLayout.addView(tagText);
+            }
+        } else {
+            mTagsSectionLinearLayout.setVisibility(View.GONE);
+        }
 
         if(photoUri.isEmpty() == false) {
             Picasso.with(getActivity())

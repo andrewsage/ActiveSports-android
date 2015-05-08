@@ -413,7 +413,7 @@ public class TodayFragment extends Fragment implements android.support.v4.app.Lo
                 int resID = getResources().getIdentifier(logoName, "drawable", getActivity().getPackageName());
                 imageView.setImageResource(resID);
             }
-            
+
             return contentsView;
         }
 
