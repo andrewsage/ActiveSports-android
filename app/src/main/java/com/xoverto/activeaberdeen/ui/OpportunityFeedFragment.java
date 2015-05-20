@@ -3,12 +3,14 @@ package com.xoverto.activeaberdeen.ui;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 
 import com.xoverto.activeaberdeen.DataProvider;
 import com.xoverto.activeaberdeen.DataUpdateService;
+import com.xoverto.activeaberdeen.OpportunityCursorAdapter;
 import com.xoverto.activeaberdeen.R;
 
 import java.util.ArrayList;
@@ -43,7 +46,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
     public static final String LIST_TITLE = "list_title";
 
     private OnFragmentInteractionListener mListener;
-    private SimpleCursorAdapter mCursorAdapter;
+    private OpportunityCursorAdapter mCursorAdapter;
 
     /**
      * The fragment's ListView/GridView.
@@ -90,18 +93,35 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
 
         // Set the adapter
         // The layout resource is for the actual table cell if this was iOS
-        mCursorAdapter = new SimpleCursorAdapter(getActivity(),
+        mCursorAdapter = new OpportunityCursorAdapter(getActivity(),
                 R.layout.opportunity_list_item,
                 null,
-                new String[] { DataProvider.KEY_OPPORTUNITY_NAME,
+                new String[] {
+                        DataProvider.KEY_OPPORTUNITY_START_TIME,
+                        DataProvider.KEY_OPPORTUNITY_NAME,
                         DataProvider.KEY_OPPORTUNITY_VENUE_ID,
                         DataProvider.KEY_OPPORTUNITY_START_TIME,
                 },
-                new int[] { R.id.name, R.id.venue, R.id.start_time }, 0);
+                new int[] { R.id.separator, R.id.name, R.id.venue, R.id.start_time }, 0);
 
-
-        mCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+        mCursorAdapter.setViewBinder(new OpportunityCursorAdapter.ViewBinder() {
             public boolean setViewValue(View view, Cursor cursor, int column) {
+
+                boolean needSeparator = false;
+
+                if (view.getId() == R.id.separator) {
+                    TextView separator = (TextView)view.findViewById(R.id.separator);
+
+                    String label = cursor.getString(cursor.getColumnIndex(DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK));
+
+
+                    if(needSeparator) {
+                        separator.setText(label);
+                        separator.setVisibility(View.VISIBLE);
+                    } else {
+                        separator.setVisibility(View.GONE);
+                    }
+                }
 
                 if (view.getId() == R.id.start_time) {
                     TextView text = (TextView)view.findViewById(R.id.start_time);
@@ -296,7 +316,7 @@ public class OpportunityFeedFragment extends Fragment implements AbsListView.OnI
         };
         CursorLoader loader = new CursorLoader(getActivity(),
                 DataProvider.CONTENT_URI_OPPORTUNITIES,
-                projection, w, selectionArgsArray, null);
+                projection, w, selectionArgsArray, DataProvider.KEY_OPPORTUNITY_DAY_OF_WEEK + "," + DataProvider.KEY_OPPORTUNITY_START_TIME);
 
         return loader;
     }
