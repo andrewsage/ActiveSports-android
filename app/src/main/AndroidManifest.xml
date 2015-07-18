@@ -119,9 +119,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.xoverto.activeaberdeen.activities.HomeActivity" />
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="33e8d98f9cea90bd78030fda8ed3d8bee5d0b4d2" />
+
+        <activity
+            android:name=".activities.ActivitiesPreferencesActivity"
+            android:label="@string/title_activity_preferences"
+            android:parentActivityName=".activities.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.xoverto.activeaberdeen.activities.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>

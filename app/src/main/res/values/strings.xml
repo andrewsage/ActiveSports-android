@@ -46,5 +46,6 @@
         <item>Saturday</item>
         <item>Any</item>
     </string-array>
+    <string name="title_activity_preferences">PreferencesActivity</string>
 
 </resources>
