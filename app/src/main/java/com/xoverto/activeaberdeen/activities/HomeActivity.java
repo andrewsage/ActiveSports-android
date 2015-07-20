@@ -81,6 +81,9 @@ public class HomeActivity extends ActionBarActivity {
         String versionName = BuildConfig.VERSION_NAME;
         versionTextView.setText("Development build\n" + versionName);
 
+        /*
+        // Display prompt if preferences have not yet been set
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("In order to help us recommend activities that are more relevant to you we would like to ask you some questions.")
                 .setTitle("Your activity preferences")
@@ -99,6 +102,7 @@ public class HomeActivity extends ActionBarActivity {
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
+        */
     }
 
 

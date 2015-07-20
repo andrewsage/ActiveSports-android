@@ -20,6 +20,7 @@ public class DataProvider extends ContentProvider {
     public static final Uri CONTENT_URI_ACTIVITIES = Uri.parse("content://com.xoverto.activeaberdeen/activities");
     public static final Uri CONTENT_URI_SUB_ACTIVITIES = Uri.parse("content://com.xoverto.activeaberdeen/sub_activities");
     public static final Uri CONTENT_URI_OPPORTUNITIES = Uri.parse("content://com.xoverto.activeaberdeen/opportunities");
+    public static final Uri CONTENT_URI_OPPORTUNITIES_DISTINCT = Uri.parse("content://com.xoverto.activeaberdeen/distinctOpportunties");
 
     // Column names
     public static final String KEY_ID = "_id"; // All tables use this field
@@ -66,6 +67,7 @@ public class DataProvider extends ContentProvider {
     private static final int SUB_ACTIVITY_ID = 6;
     private static final int OPPORTUNITIES = 7;
     private static final int OPPORTUNITY_ID = 8;
+    private static final int OPPORTUNITIES_DISTINCT = 9;
 
     private static final UriMatcher uriMatcher;
 
@@ -82,6 +84,7 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI("com.xoverto.activeaberdeen", "sub_activities/#", SUB_ACTIVITY_ID);
         uriMatcher.addURI("com.xoverto.activeaberdeen", "opportunities", OPPORTUNITIES);
         uriMatcher.addURI("com.xoverto.activeaberdeen", "opportunities/#", OPPORTUNITY_ID);
+        uriMatcher.addURI("com.xoverto.activeaberdeen", "distinctOpportunties", OPPORTUNITIES_DISTINCT);
     }
 
     DatabaseHelper dbHelper;
@@ -152,11 +155,17 @@ public class DataProvider extends ContentProvider {
         }
 
         // Apply the query to the underlying database
-        Cursor c = qb.query(database,
-                projection,
-                selection, selectionArgs,
-                null, null,
-                orderBy);
+        Cursor c;
+
+        if(uriMatcher.match(uri) == OPPORTUNITIES_DISTINCT) {
+            c = database.query(true, DatabaseHelper.OPPORTUNITY_TABLE, new String[]{ KEY_ID, KEY_OPPORTUNITY_DAY_OF_WEEK}, null, null, KEY_OPPORTUNITY_DAY_OF_WEEK, null, null, null);
+        } else {
+            c = qb.query(database,
+                    projection,
+                    selection, selectionArgs,
+                    null, null,
+                    orderBy);
+        }
 
         // Register the contexts ContentResolver to be notified if the cursor result set changes
         c.setNotificationUri(getContext().getContentResolver(), uri);

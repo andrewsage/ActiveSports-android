@@ -5,10 +5,14 @@
     android:layout_height="match_parent"
     tools:context="com.xoverto.activeaberdeen.ui.OpportunityFeedFragment">
 
-    <ListView
+    <ExpandableListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:groupIndicator="@null"
+        android:listSelector="@android:color/holo_orange_light"
+        android:padding="0dp" />
 
     <TextView
         android:id="@android:id/empty"
